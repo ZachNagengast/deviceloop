@@ -14,8 +14,9 @@ struct PrepareCLI: AsyncParsableCommand {
             and wait up to --wait seconds each. With --pair, a device that is not paired is asked to pair with `devicectl manage \
             pair` before the pair step waits. Tool steps mount the developer disk image, store the signing team and start the UI \
             runner, which may ask for the device passcode. When that prompt times out, the runner starts again until \
-            --wait-for-owner runs out. A live runner is reused. Steps after one that is not done are blocked. With --all the \
-            targets run at the same time. Exits 1 when a target is not ready.
+            --wait-for-owner runs out. A live runner is reused. Steps after one that is not done are blocked. Without --all, \
+            prepare acts on one target: --device, $DEVICELOOP_DEVICE or the only ready one. With --all the targets run at the \
+            same time. Exits 1 when a target is not ready.
             """
     )
 

@@ -92,7 +92,16 @@ struct UICLI: AsyncParsableCommand {
     }
 
     struct TapCLI: AsyncParsableCommand {
-        static let configuration = CommandConfiguration(commandName: "tap", abstract: "Tap a point, ref or element.")
+        static let configuration = CommandConfiguration(
+            commandName: "tap",
+            abstract: "Tap a point, ref or element.",
+            discussion: """
+                Examples:
+                  deviceloop ui tap General
+                  deviceloop ui tap id=photo --count 2
+                  deviceloop ui tap 120,640 --hold-ms 800
+                """
+        )
 
         @Argument(help: "120,640 or @e5 or id=login or a label.")
         var element: String
@@ -107,15 +116,22 @@ struct UICLI: AsyncParsableCommand {
         @OptionGroup var target: TargetOptions
 
         func run() async throws {
-            let element = try UIStep.parseTarget(element)
-            try await Output.run(target) {
-                try await UICommands.perform(.tap(element, count: count, holdMs: holdMs), on: $0, app: app.app)
-            }
+            let step = UIStep.tap(try UIStep.parseTarget(element), count: count, holdMs: holdMs)
+            try step.validate()
+            try await Output.run(target) { try await UICommands.perform(step, on: $0, app: app.app) }
         }
     }
 
     struct SwipeCLI: AsyncParsableCommand {
-        static let configuration = CommandConfiguration(commandName: "swipe", abstract: "Swipe up, down, left or right.")
+        static let configuration = CommandConfiguration(
+            commandName: "swipe",
+            abstract: "Swipe up, down, left or right.",
+            discussion: """
+                Examples:
+                  deviceloop ui swipe up
+                  deviceloop ui swipe left --on id=card
+                """
+        )
 
         @Argument(help: "`up`, `down`, `left` or `right`.")
         var direction: String
@@ -130,10 +146,9 @@ struct UICLI: AsyncParsableCommand {
         @OptionGroup var target: TargetOptions
 
         func run() async throws {
-            let element = try on.map(UIStep.parseTarget)
-            try await Output.run(target) {
-                try await UICommands.perform(.swipe(direction: direction, on: element, velocity: velocity), on: $0, app: app.app)
-            }
+            let step = UIStep.swipe(direction: direction, on: try on.map(UIStep.parseTarget), velocity: velocity)
+            try step.validate()
+            try await Output.run(target) { try await UICommands.perform(step, on: $0, app: app.app) }
         }
     }
 
@@ -159,14 +174,22 @@ struct UICLI: AsyncParsableCommand {
             guard let start = UIStep.parsePoint(from), let end = UIStep.parsePoint(to) else {
                 throw DeviceLoopError.usage("drag expects two points, for example: deviceloop ui drag 200,700 200,200")
             }
-            try await Output.run(target) {
-                try await UICommands.perform(.drag(from: start, to: end, velocity: velocity, holdMs: holdMs), on: $0, app: app.app)
-            }
+            let step = UIStep.drag(from: start, to: end, velocity: velocity, holdMs: holdMs)
+            try step.validate()
+            try await Output.run(target) { try await UICommands.perform(step, on: $0, app: app.app) }
         }
     }
 
     struct TypeCLI: AsyncParsableCommand {
-        static let configuration = CommandConfiguration(commandName: "type", abstract: "Type text into the focused field, or into --into.")
+        static let configuration = CommandConfiguration(
+            commandName: "type",
+            abstract: "Type text into the focused field, or into --into.",
+            discussion: """
+                Examples:
+                  deviceloop ui type "hello"
+                  deviceloop ui type "user@example.com" --into id=email --clear
+                """
+        )
 
         @Argument(help: "Text to type.")
         var text: String
@@ -181,10 +204,9 @@ struct UICLI: AsyncParsableCommand {
         @OptionGroup var target: TargetOptions
 
         func run() async throws {
-            let element = try into.map(UIStep.parseTarget)
-            try await Output.run(target, hiding: [text]) {
-                try await UICommands.perform(.type(text, into: element, clear: clear), on: $0, app: app.app)
-            }
+            let step = UIStep.type(text, into: try into.map(UIStep.parseTarget), clear: clear)
+            try step.validate()
+            try await Output.run(target, hiding: [text]) { try await UICommands.perform(step, on: $0, app: app.app) }
         }
     }
 
@@ -198,7 +220,9 @@ struct UICLI: AsyncParsableCommand {
         @OptionGroup var target: TargetOptions
 
         func run() async throws {
-            try await Output.run(target) { try await UICommands.perform(.press(button: button), on: $0, app: nil) }
+            let step = UIStep.press(button: button)
+            try step.validate()
+            try await Output.run(target) { try await UICommands.perform(step, on: $0, app: nil) }
         }
     }
 
@@ -219,7 +243,16 @@ struct UICLI: AsyncParsableCommand {
     }
 
     struct WaitCLI: AsyncParsableCommand {
-        static let configuration = CommandConfiguration(commandName: "wait", abstract: "Wait for an element, or for the screen to settle.")
+        static let configuration = CommandConfiguration(
+            commandName: "wait",
+            abstract: "Wait for an element, or for the screen to settle.",
+            discussion: """
+                Examples:
+                  deviceloop ui wait --label Done
+                  deviceloop ui wait --until gone --id spinner --timeout-ms 30000
+                  deviceloop ui wait --until stable
+                """
+        )
 
         @Option(name: .long, help: "`exists`, `gone`, `hittable`, `enabled` or `stable`.")
         var until = "exists"
@@ -277,8 +310,23 @@ struct UICLI: AsyncParsableCommand {
             commandName: "do",
             abstract: "Run steps in order.",
             discussion: """
-                Stops at the first step that fails and exits 1. Ctrl-C stops before the next step and exits 130.
-                Example: deviceloop ui do 'tap "Wi-Fi"' 'swipe up' 'sleep 300'
+                Each step is one argument, with targets as in `ui tap`. Stops at the first step that fails and exits 1. \
+                Ctrl-C stops before the next step and exits 130.
+                Steps:
+                  tap id=login
+                  doubletap id=photo
+                  hold 120,640 800        Holds for 800 ms, the default.
+                  swipe up
+                  swipe left id=card      Swipes on one element.
+                  drag 200,700 200,200
+                  type "hello" id=email   Types into the field and reads it back.
+                  press home
+                  launch com.apple.Preferences
+                  open myapp://route
+                  sleep 500               Waits 500 ms.
+                Examples:
+                  deviceloop ui do 'tap "Wi-Fi"' 'swipe up' 'sleep 300'
+                  deviceloop ui do 'type "hello" id=email' 'press home' --screenshot
                 """
         )
 
@@ -293,6 +341,7 @@ struct UICLI: AsyncParsableCommand {
 
         func run() async throws {
             let parsed = try steps.map(UIStep.parse)
+            try UICommands.validate(parsed)
             let typed = zip(steps, parsed).flatMap { step, parsed in parsed.typedText.map { [step, $0] } ?? [] }
             try await Output.runFlow(target, hiding: typed) {
                 try await UICommands.perform(parsed, on: $0, app: app.app, screenshot: screenshot)

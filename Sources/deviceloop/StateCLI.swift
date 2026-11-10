@@ -79,7 +79,14 @@ struct StateCLI: AsyncParsableCommand {
 
         struct Start: AsyncParsableCommand {
             static let configuration = CommandConfiguration(
-                abstract: "Capture a baseline and journal each later change with its original value.")
+                abstract: "Capture a baseline and journal each later change with its original value.",
+                discussion: """
+                    Examples:
+                      deviceloop state scope start
+                      deviceloop appearance dark
+                      deviceloop state restore
+                    """
+            )
 
             @Flag(name: .long, help: "Refuse changes DeviceLoop cannot set back: location, Siri system controls and pasteboard copy.")
             var strict = false

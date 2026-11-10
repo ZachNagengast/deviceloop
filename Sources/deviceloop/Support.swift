@@ -82,16 +82,28 @@ enum Output {
 
     /// The subcommand names at the start of `arguments`, ending with the default subcommand of a group, and the words after them.
     static func commandWords(_ arguments: [String]) -> (command: String, args: [String]) {
-        var words = arguments[...]
-        var command: [String] = []
+        let path = commandPath(arguments)
+        var command = path.commands.dropFirst().map { $0._commandName }
+        if let fallback = path.commands.last?.configuration.defaultSubcommand { command.append(fallback._commandName) }
+        return (command.joined(separator: " "), Array(path.rest))
+    }
+
+    /// The root command and the subcommands the words at the start of `arguments` name, and the arguments after them.
+    static func commandPath(_ arguments: [String]) -> (commands: [any ParsableCommand.Type], rest: ArraySlice<String>) {
+        var rest = arguments[...]
+        var commands: [any ParsableCommand.Type] = [DeviceLoopCLI.self]
         var parent: any ParsableCommand.Type = DeviceLoopCLI.self
-        while let word = words.first, let subcommand = parent.configuration.subcommands.first(where: { $0._commandName == word }) {
-            command.append(word)
-            words.removeFirst()
+        while let word = rest.first, let subcommand = parent.configuration.subcommands.first(where: { $0._commandName == word }) {
+            commands.append(subcommand)
+            rest.removeFirst()
             parent = subcommand
         }
-        if let fallback = parent.configuration.defaultSubcommand { command.append(fallback._commandName) }
-        return (command.joined(separator: " "), Array(words))
+        return (commands, rest)
+    }
+
+    /// Whether `--json` comes before any `--` in `arguments`.
+    static func wantsJSON(_ arguments: [String]) -> Bool {
+        arguments.prefix { $0 != "--" }.contains("--json")
     }
 
     /// Prints the result of `body`, then exits with `exitCode(result)` when it is not 0. Maps errors to exit codes.

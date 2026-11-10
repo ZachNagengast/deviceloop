@@ -27,7 +27,9 @@ struct SetupCLI: AsyncParsableCommand {
     @Flag(name: .long, help: "Do not register the MCP server with Claude Code, Codex, Cursor or Gemini CLI.")
     var noAgents = false
 
-    @Option(name: [.short, .customLong("device")], help: "Device or simulator to finish setup on. Defaults to every target.")
+    @Option(
+        name: [.short, .customLong("device")],
+        help: "Device or simulator to finish setup on. Defaults to $DEVICELOOP_DEVICE, or every target when it is unset.")
     var device: String?
 
     @OptionGroup var output: OutputOptions
@@ -46,14 +48,16 @@ struct DoctorCLI: AsyncParsableCommand {
         abstract:
             "Check Xcode, signing, pairing, Developer Mode, connection, lock state, UI Automation and the runner session, with one fix per problem.",
         discussion: """
-            Checks every device, booted simulator and simulator with an open state scope unless --device names one. \
-            Exits 1 when a check fails.
+            Checks the target --device or $DEVICELOOP_DEVICE names. Without either, checks every device, booted simulator \
+            and simulator with an open state scope. Exits 1 when a check fails.
             --export DIR writes a support folder to attach to bug reports, with names, UDIDs, teams, tokens and paths \
             replaced by aliases, and exits 0 once it is written.
             """
     )
 
-    @Option(name: [.short, .customLong("device")], help: "Check one device or simulator.")
+    @Option(
+        name: [.short, .customLong("device")],
+        help: "Check one device or simulator. Defaults to $DEVICELOOP_DEVICE, or every target when it is unset.")
     var device: String?
 
     @Option(

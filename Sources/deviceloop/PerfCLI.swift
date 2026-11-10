@@ -127,7 +127,9 @@ struct PerfCLI: AsyncParsableCommand {
                 when the ranges overlap. It is inconclusive with fewer measurements or different units, and every metric \
                 is inconclusive when the devices, OS builds or perf scenarios (app and steps) differ. Launch arguments are \
                 listed, not compared.
-                Example: deviceloop perf compare ~/Library/Caches/deviceloop/artifacts/test-<a> ~/Library/Caches/deviceloop/artifacts/test-<b>
+                Examples:
+                  deviceloop perf compare <job-dir-a> <job-dir-b>
+                  deviceloop perf compare baseline.xcresult candidate.xcresult
                 """
         )
 

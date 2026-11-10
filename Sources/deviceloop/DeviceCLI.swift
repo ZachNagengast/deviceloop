@@ -92,7 +92,16 @@ struct UninstallCLI: AsyncParsableCommand {
 }
 
 struct LaunchCLI: AsyncParsableCommand {
-    static let configuration = CommandConfiguration(commandName: "launch", abstract: "Launch an app.")
+    static let configuration = CommandConfiguration(
+        commandName: "launch",
+        abstract: "Launch an app.",
+        discussion: """
+            Examples:
+              deviceloop launch com.apple.Preferences
+              deviceloop launch com.example.MyApp --restart --env STAGE=test
+              deviceloop launch com.example.MyApp --console -- -AppleLanguages "(fr)"
+            """
+    )
 
     @Argument(help: "Bundle ID.")
     var bundleID: String
@@ -166,7 +175,7 @@ struct LocationCLI: AsyncParsableCommand {
             """
     )
 
-    @Argument(help: "LAT,LON or `clear`.")
+    @Argument(help: "LAT,LON or `clear`. Put -- before a negative latitude.")
     var value: String
 
     @OptionGroup var target: TargetOptions

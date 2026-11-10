@@ -31,7 +31,7 @@ struct VideoCLI: AsyncParsableCommand {
     struct Record: AsyncParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Record the screen until Ctrl-C, or for --duration-ms.")
 
-        @Option(name: [.short, .long], help: "Where to save the video.")
+        @Option(name: [.short, .long], help: "Where to save the video. The path must not exist yet.")
         var output: String?
 
         @Option(name: .long, help: "Stop after this many milliseconds.")
@@ -86,7 +86,9 @@ struct VideoCLI: AsyncParsableCommand {
                 With --instruments on a device, an Animation Hitches trace of --app starts first, the USB capture after it, \
                 and each gap candidate is checked against the trace's displayed-surface gaps. Tracing needs about 0.5 GB of \
                 free disk per second of --pre-ms, --wait-ms and a 10 s margin, plus 1 GB.
-                Example: deviceloop video capture --do 'tap "Wi-Fi"'
+                Examples:
+                  deviceloop video capture --do 'tap "Wi-Fi"'
+                  deviceloop video capture --do 'launch com.example.MyApp' --wait-ms 3000
                 """
         )
 

@@ -13,7 +13,7 @@ import Testing
     static let fakeDeviceLoop = """
         #!/bin/sh
         case "$*" in
-        "run compare "*--device*) echo '{"error": {"code": "bad_arguments"}}'; exit 64 ;;
+        "run compare "*--device*) echo '{"error": {"code": "bad_arguments"}}'; exit 2 ;;
         "run compare smoke-compare-a smoke-compare-a-again "*) cat "$(dirname "$0")/control.json" ;;
         "run compare smoke-compare-a smoke-compare-b "*) cat "$(dirname "$0")/seeded.json" ;;
         "run start "*) echo "{\\"id\\": \\"$4\\"}" ;;

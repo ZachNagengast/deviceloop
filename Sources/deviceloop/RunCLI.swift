@@ -11,7 +11,10 @@ struct RunCLI: AsyncParsableCommand {
         abstract: "Record the commands sent to a device into a run folder.",
         discussion: """
             Between `run start` and `run stop`, every command on that device is journaled with its outcome, result JSON and files.
-            Example: deviceloop run start --app com.example.app, then the test, then deviceloop run stop
+            Examples:
+              deviceloop run start --name login --app com.example.MyApp
+              deviceloop ui tap id=login
+              deviceloop run stop
             """,
         subcommands: [Start.self, Stop.self, Status.self, Show.self, Report.self, List.self, Prune.self, Compare.self, Export.self],
         defaultSubcommand: Status.self
@@ -87,7 +90,9 @@ struct RunCLI: AsyncParsableCommand {
             abstract: "Remove old runs. Runs that a device records into are kept.",
             discussion: """
                 With both options, a run is removed only when both select it.
-                Example: deviceloop run prune --keep 10
+                Examples:
+                  deviceloop run prune --keep 10
+                  deviceloop run prune --older-than 30
                 """)
 
         @Option(name: .long, help: ArgumentHelp("Remove runs created more than this many days ago.", valueName: "days"))
@@ -115,7 +120,9 @@ struct RunCLI: AsyncParsableCommand {
                 in points and a diff image. Screenshots of different sizes make the result inconclusive.
                 Steps where both runs saved a video analysis compare latency, animation, last change and visual gap times. These are \
                 visual estimates from one uncalibrated capture each, so a timing is only changed, never regressed.
-                Example: deviceloop run compare run-20261108-131927-3f9a2c run-20261108-140210-7b1d04 --mask 0,0,430,54
+                Examples:
+                  deviceloop run compare run-20261108-131927-3f9a2c run-20261108-140210-7b1d04
+                  deviceloop run compare <baseline> <candidate> --mask 0,0,430,54
                 """)
 
         @Argument(help: "Baseline run ID.") var baseline: String
@@ -161,7 +168,9 @@ struct RunCLI: AsyncParsableCommand {
                 hidden, and report.html is rendered again from the redacted copy. EXPORT.txt lists the SHA256 of every file and \
                 the replacements. Screenshots, videos and UI text are copied as recorded, so review them before you share the folder. \
                 Runs are only read.
-                Example: deviceloop run export run-20261108-131927-3f9a2c --out bug-report --zip
+                Examples:
+                  deviceloop run export run-20261108-131927-3f9a2c --out bug-report --zip
+                  deviceloop run export --comparison <id> --out bug-report --no-media
                 """)
 
         @Argument(help: "Run ID, for example run-20261108-131927-3f9a2c.") var id: String?

@@ -34,7 +34,12 @@ struct FlowCLI: AsyncParsableCommand {
     struct Run: AsyncParsableCommand {
         static let configuration = CommandConfiguration(
             abstract: "Run a flow file and save its result and screenshots.",
-            discussion: "Prints each step's result. Exits 1 when the flow fails, 130 when Ctrl-C stops it before the next step."
+            discussion: """
+                Prints each step's result. Exits 1 when the flow fails, 130 when Ctrl-C stops it before the next step.
+                Examples:
+                  deviceloop flow run login.json
+                  deviceloop flow run login.json --app com.example.beta --timeout-ms 120000
+                """
         )
 
         @Argument(help: "Flow JSON file.")

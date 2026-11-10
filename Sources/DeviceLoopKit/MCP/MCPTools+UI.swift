@@ -46,8 +46,6 @@ extension MCPTool {
 }
 
 extension MCPTools {
-    static let swipeDirections = ["up", "down", "left", "right"]
-    static let buttons = ["home", "volumeUp", "volumeDown", "action", "camera"]
     static let waitConditions = ["exists", "gone", "hittable", "enabled", "stable"]
 
     static let ui: [MCPTool] = [
@@ -115,7 +113,7 @@ extension MCPTools {
             title: "Swipe",
             description: "Swipe up, down, left or right on the app or on one element.",
             properties: [
-                "direction": Param.string("Swipe direction.", oneOf: swipeDirections),
+                "direction": Param.string("Swipe direction.", oneOf: UIStep.swipeDirections),
                 "on": Param.string("Element to swipe on, same forms as ui_tap. Defaults to the whole app."),
                 "velocity": Param.number("Pixels per second, greater than 0."),
                 "app": Param.app,
@@ -123,7 +121,7 @@ extension MCPTools {
             required: ["direction"]
         ) { arguments in
             let direction = try arguments.require("direction")
-            guard swipeDirections.contains(direction) else {
+            guard UIStep.swipeDirections.contains(direction) else {
                 throw DeviceLoopError(.badArguments, "ui_swipe direction must be up, down, left or right, got \(direction).")
             }
             return .swipe(
@@ -156,12 +154,13 @@ extension MCPTools {
             title: "Press button",
             description:
                 "Press a hardware button. A target without that button fails with unsupported_on_target and lists the ones it has. Volume buttons only on devices.",
-            properties: ["button": Param.string("Button to press.", oneOf: buttons)],
+            properties: ["button": Param.string("Button to press.", oneOf: UIStep.buttons)],
             required: ["button"]
         ) { arguments in
             let button = try arguments.require("button")
-            guard buttons.contains(button) else {
-                throw DeviceLoopError(.badArguments, "ui_press button must be one of \(buttons.joined(separator: ", ")), got \(button).")
+            guard UIStep.buttons.contains(button) else {
+                throw DeviceLoopError(
+                    .badArguments, "ui_press button must be one of \(UIStep.buttons.joined(separator: ", ")), got \(button).")
             }
             return .press(button: button)
         },

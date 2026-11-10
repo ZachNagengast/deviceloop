@@ -52,8 +52,16 @@ enum Recorder {
         directory.appending(path: id, directoryHint: .isDirectory)
     }
 
-    /// Runs `preflight` first, or only `checkIdle` when the caller already ran `preflight`.
+    /// Throws `bad_arguments` when a file or folder is already at `video`.
+    static func requireNewVideo(_ video: URL) throws {
+        guard !FileManager.default.fileExists(atPath: video.path) else {
+            throw DeviceLoopError(.badArguments, "\(video.path) already exists.", fix: "Pass a video path that does not exist yet.")
+        }
+    }
+
+    /// Refuses an existing `video`, then runs `preflight`, or only `checkIdle` when the caller already ran `preflight`.
     static func start(_ target: Target, video: URL, preflighted: Bool = false) async throws -> RecordingHandle {
+        try requireNewVideo(video)
         if preflighted { try checkIdle(target) } else { try await preflight(target) }
         let id = String(UUID().uuidString.prefix(8)).lowercased()
         let state = try Paths.ensureDirectory(stateDirectory(id))
@@ -76,6 +84,7 @@ enum Recorder {
         } catch {
             await abandon(handle)
             try? FileManager.default.removeItem(at: state)
+            try? FileManager.default.removeItem(at: video)
             throw error
         }
         let file = directory.appending(path: "\(id).json")

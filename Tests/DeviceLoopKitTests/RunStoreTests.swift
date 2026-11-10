@@ -213,7 +213,7 @@ import Testing
         for arguments in [
             ["init", "-q"], ["add", "README"],
             ["-c", "user.name=test", "-c", "user.email=test@example.com", "-c", "commit.gpgsign=false", "commit", "-q", "-m", "one"],
-        ] + config.map { ["config"] + $0 } {
+        ] + config.map({ ["config"] + $0 }) {
             #expect(try await Shell.run(["git", "-C", checkout.path] + arguments, environment: isolated).succeeded)
         }
         try await body(checkout)
@@ -226,6 +226,15 @@ import Testing
             let source = try await RunProvenance.git(checkout)
             #expect(source.dirty)
             #expect(source.revision.count == 40)
+        }
+    }
+
+    @Test func gitSourceDoesNotRunTheCheckoutFsmonitorHook() async throws {
+        let marker = FileManager.default.temporaryDirectory.appending(path: "deviceloop-fsmonitor-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: marker) }
+        try await inCheckout(config: [["core.fsmonitor", "touch '\(marker.path)'; false"]]) { checkout in
+            _ = try await RunProvenance.git(checkout)
+            #expect(!FileManager.default.fileExists(atPath: marker.path))
         }
     }
 

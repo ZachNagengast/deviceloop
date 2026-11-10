@@ -393,7 +393,7 @@ private func preferredDDI(usable: Bool = true) throws -> JSONValue {
 }
 
 /// Runs against a booted simulator: DEVICELOOP_TEST_SIMULATOR=<udid> xcrun swift test --filter DoctorLiveTests
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil))
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .sharedSimulator)
 struct DoctorLiveTests {
     @Test func liveRunnerAnswersTheUIAutomationCheck() async throws {
         let target = try await TargetResolver.resolve(ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"])

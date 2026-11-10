@@ -15,6 +15,11 @@ public enum UIStep: Sendable, Equatable {
     case openURL(String)
     case sleep(ms: Int)
 
+    /// The swipe directions the runner takes.
+    static let swipeDirections = ["up", "down", "left", "right"]
+    /// The hardware buttons the runner presses, by wire name.
+    static let buttons = ["home", "volumeUp", "volumeDown", "action", "camera"]
+
     /// Parses the step grammar shared by the CLI and MCP:
     /// `tap 120,640`, `tap @e5`, `tap "Wi-Fi"`, `tap id=login`, `hold @e5 800`, `swipe up`, `swipe left @e3`,
     /// `drag 200,700 200,200`, `type "hello"`, `press home`, `launch com.apple.Preferences`, `open https://...`, `sleep 500`.
@@ -36,7 +41,7 @@ public enum UIStep: Sendable, Equatable {
                 }
                 return .tap(target, count: verb == "doubletap" ? 2 : 1)
             case "swipe":
-                guard let direction = rest.first?.lowercased(), ["up", "down", "left", "right"].contains(direction) else {
+                guard let direction = rest.first?.lowercased(), swipeDirections.contains(direction) else {
                     throw DeviceLoopError.usage("swipe needs a direction: up, down, left or right")
                 }
                 return .swipe(direction: direction, on: try rest.dropFirst().first.map(parseTarget))
@@ -68,8 +73,8 @@ public enum UIStep: Sendable, Equatable {
         }
     }
 
-    /// Throws bad_arguments for a tap count other than 1 or 2, a hold outside 1-10000 ms,
-    /// a velocity that is not a finite number greater than 0, or a point that is not finite.
+    /// Throws bad_arguments for a tap count other than 1 or 2, an unknown swipe direction or button, a hold outside
+    /// 1-10000 ms, a velocity that is not a finite number greater than 0, or a point that is not finite.
     public func validate() throws {
         var points: [WirePoint?] = []
         var targets: [ElementTarget?] = []
@@ -81,7 +86,11 @@ public enum UIStep: Sendable, Equatable {
                 points = [target.point]
                 targets = [target]
                 holdMs = hold
-            case .swipe(_, let on, let speed):
+            case .swipe(let direction, let on, let speed):
+                guard Self.swipeDirections.contains(direction) else {
+                    throw DeviceLoopError(
+                        .badArguments, "Swipe direction must be up, down, left or right, not \(direction).", fix: "For example: swipe up")
+                }
                 points = [on?.point]
                 targets = [on]
                 velocity = speed
@@ -92,6 +101,12 @@ public enum UIStep: Sendable, Equatable {
             case .type(_, let into, _):
                 points = [into?.point]
                 targets = [into]
+            case .press(let button):
+                guard Self.buttons.contains(button) else {
+                    throw DeviceLoopError(
+                        .badArguments, "Button must be home, volumeUp, volumeDown, action or camera, not \(button).",
+                        fix: "For example: press home")
+                }
             default:
                 break
         }

@@ -168,7 +168,7 @@ struct RunnerSession: Sendable {
                 file.host = current
                 try file.write()
                 log("reusing runner session \(epoch) at \(current), the device tunnel moved from \(previous)")
-                return (session(target, file, health), health)
+                return (session(target, file), health)
             }
             try Task.checkCancellation()
             // USB capture moves the tunnel of some devices, and their runner stops answering while xcodebuild lingers.
@@ -189,22 +189,27 @@ struct RunnerSession: Sendable {
             file.discard()
             return nil
         }
-        guard let health = await probe(file, previous) else {
+        let health = await probe(file, previous)
+        guard let health, let epoch = health.sessionEpoch, epoch == file.sessionEpoch else {
             try Task.checkCancellation()
             guard exited(file) else {
+                let message =
+                    health == nil
+                    ? "The existing runner is unreachable, but its host process has not exited."
+                    : "Another runner session answers at \(file.host) port \(file.port), but this session's host process has not exited."
                 throw DeviceLoopError(
-                    .runnerUnreachable, "The existing runner is unreachable, but its host process has not exited.",
+                    .runnerUnreachable, message,
                     fix: "Run runner stop for this target and wait for teardown before starting another runner.", device: target.name
                 )
             }
             file.discard()
             return nil
         }
-        return (session(target, file, health), health)
+        return (session(target, file), health)
     }
 
-    private static func session(_ target: Target, _ file: SessionFile, _ health: HealthResult) -> RunnerSession {
-        let client = RunnerClient(baseURL: .runner(host: file.host, port: file.port), token: file.token, epoch: health.sessionEpoch)
+    private static func session(_ target: Target, _ file: SessionFile) -> RunnerSession {
+        let client = RunnerClient(baseURL: .runner(host: file.host, port: file.port), token: file.token, epoch: file.sessionEpoch)
         return RunnerSession(target: target, client: client, info: file)
     }
 
@@ -218,12 +223,14 @@ struct RunnerSession: Sendable {
         file.processIdentity == nil || RunnerProcess.state(of: file.pid, matching: file.processIdentity) == .exited
     }
 
-    /// The session to stop, also when its HTTP server is gone and xcodebuild is still finishing its results.
+    /// The session to stop, also when its HTTP server is gone and xcodebuild is still finishing its results. A server
+    /// that answers with another session epoch counts as gone.
     private static func sessionForStop(_ target: Target) async throws -> RunnerSession? {
         guard let file = SessionFile.read(for: target.udid) else { return nil }
-        var client = RunnerClient(baseURL: .runner(host: file.host, port: file.port), token: file.token, epoch: file.sessionEpoch)
-        if let health = try? await client.get(RunnerWire.Path.health, as: HealthResult.self, timeout: 3) {
-            client.epoch = health.sessionEpoch
+        let client = RunnerClient(baseURL: .runner(host: file.host, port: file.port), token: file.token, epoch: file.sessionEpoch)
+        if let health = try? await client.get(RunnerWire.Path.health, as: HealthResult.self, timeout: 3),
+            health.sessionEpoch == file.sessionEpoch
+        {
             return RunnerSession(target: target, client: client, info: file)
         }
         try Task.checkCancellation()

@@ -202,7 +202,8 @@ struct RunnerClient: Sendable {
                 case .elementNotHittable: "Swipe the element onto the screen with deviceloop ui swipe, then tap it again."
                 default: nil
             }
-        return DeviceLoopError(code, error.message, fix: fix, detail: detail, alternatives: error.alternatives ?? [])
+        return DeviceLoopError(
+            code, UITree.escaped(error.message), fix: fix, detail: detail, alternatives: (error.alternatives ?? []).map(UITree.escaped))
     }
 }
 

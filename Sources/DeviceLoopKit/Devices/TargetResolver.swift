@@ -76,9 +76,7 @@ public enum TargetResolver {
             throw DeviceLoopError(
                 .deviceNotFound,
                 message,
-                fix: selector == nil
-                    ? "Connect and unlock a device, or boot a simulator (xcrun simctl boot <udid>)."
-                    : "Run `deviceloop devices` and pass a name or UDID with --device.",
+                fix: selector == nil ? noTargetsFix : "Run `deviceloop devices --all` and pass a name or UDID with --device.",
                 alternatives: listing
             )
         }
@@ -89,6 +87,10 @@ public enum TargetResolver {
             alternatives: listing
         )
     }
+
+    /// The fix line when there is no device and no booted simulator to act on.
+    static let noTargetsFix =
+        "Run `deviceloop devices --all` and boot a simulator with `xcrun simctl boot <udid>`, or connect and unlock a device."
 
     /// Lowercased, with curly apostrophes and no-break spaces from device names made ASCII.
     static func folded(_ text: String) -> String {

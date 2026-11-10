@@ -98,6 +98,23 @@ import Testing
         }
     }
 
+    @Test func typedReturnHidesNoEscapedLineBreaks() {
+        #expect(RunRecorder.forms(hiding: ["\n", "a\n", ""]) == ["a\\n", "a\n", "\n"])
+    }
+
+    @Test func recordHidesTypedTextAsUITextPrintsIt() async throws {
+        try await recording { udid, run in
+            let typed = "hunter\\2\n"
+            await #expect(throws: DeviceLoopError.self) {
+                try await RunRecorder.record(udid, command: "ui type", args: ["[hidden]"], hiding: [typed]) {
+                    throw DeviceLoopError(.textMismatch, "The field holds \"\(UITree.escaped(typed))\" after typing.")
+                }
+            }
+            let events = try run.events().events
+            #expect(events[1].error?.message == #"The field holds "[hidden]" after typing."#)
+        }
+    }
+
     @Test func hidingShortTypedTextKeepsTheErrorCode() async throws {
         try await recording { udid, run in
             await #expect(throws: DeviceLoopError.self) {

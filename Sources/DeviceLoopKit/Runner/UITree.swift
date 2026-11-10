@@ -31,10 +31,10 @@ enum UITree {
             return
         }
         var parts = ["\(String(repeating: "  ", count: depth))\(node.ref) \(node.type)"]
-        if let label = node.label { parts.append("\"\(label)\"") }
-        if let id = node.id { parts.append("id=\(id)") }
-        if let value = node.value, !value.isEmpty { parts.append("value=\(value)") }
-        if let placeholder = node.placeholder { parts.append("placeholder=\(placeholder)") }
+        if let label = node.label { parts.append("\"\(escaped(label))\"") }
+        if let id = node.id { parts.append("id=\(escaped(id))") }
+        if let value = node.value, !value.isEmpty { parts.append("value=\(escaped(value))") }
+        if let placeholder = node.placeholder { parts.append("placeholder=\(escaped(placeholder))") }
         if node.enabled == false { parts.append("disabled") }
         if node.selected == true { parts.append("selected") }
         if frames, node.frame.count == 4 {
@@ -43,6 +43,26 @@ enum UITree {
         lines.append(parts.joined(separator: " "))
         for child in node.children ?? [] { append(child, depth: depth + 1, frames: frames, into: &lines) }
     }
+
+    /// `text` with backslashes, line breaks, tabs, other control characters and bidi controls written as `\\`, `\n`, `\r`, `\t` or
+    /// `\u{1B}`.
+    static func escaped(_ text: String) -> String {
+        var escaped = ""
+        for scalar in text.unicodeScalars {
+            switch scalar {
+                case "\\": escaped += "\\\\"
+                case "\n": escaped += "\\n"
+                case "\r": escaped += "\\r"
+                case "\t": escaped += "\\t"
+                case _ where controlCategories.contains(scalar.properties.generalCategory) || scalar.properties.isBidiControl:
+                    escaped += "\\u{\(String(scalar.value, radix: 16, uppercase: true))}"
+                default: escaped.unicodeScalars.append(scalar)
+            }
+        }
+        return escaped
+    }
+
+    private static let controlCategories: Set<Unicode.GeneralCategory> = [.control, .lineSeparator, .paragraphSeparator]
 
     private static func int(_ value: Double) -> Int { Int(value.rounded()) }
 }

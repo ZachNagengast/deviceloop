@@ -133,13 +133,15 @@ final class LoopbackServer: Sendable {
         closed.signal()
     }
 
-    /// Reads a request up to the closing brace of its JSON body and answers it with `body`.
+    /// Reads a request up to the closing brace of its JSON body, or to the end of the headers for a GET, and answers it
+    /// with `body`.
     private func answer(_ connection: Int32, with body: String) {
         guard connection >= 0 else { return }
         defer { close(connection) }
         var request = Data()
         var chunk = [UInt8](repeating: 0, count: 4096)
-        while request.last != UInt8(ascii: "}") {
+        let headersEnd = Data("\r\n\r\n".utf8)
+        while request.last != UInt8(ascii: "}"), !(request.starts(with: Data("GET ".utf8)) && request.range(of: headersEnd) != nil) {
             let count = read(connection, &chunk, chunk.count)
             guard count > 0 else { return }
             request.append(contentsOf: chunk[..<count])

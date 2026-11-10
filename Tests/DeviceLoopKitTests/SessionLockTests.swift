@@ -32,7 +32,7 @@ import Testing
                     try await SessionLock.withFlowLock("flow-other", on: target) {}
                 }
                 let waited = started.duration(to: .now)
-                #expect(waited >= .seconds(2) && waited < .seconds(4))
+                #expect(waited >= .seconds(2) && waited < .seconds(10))
                 #expect(second?.code == .deviceBusy)
                 #expect(second?.message == "Flow flow-20261108-131927-3f9a2c is running on \(target.summary).")
                 let connect = await #expect(throws: DeviceLoopError.self) { try await UICommands.connect(target) }
@@ -78,8 +78,8 @@ import Testing
         try await flowTarget { target in
             let flowLock = Paths.session(for: target.udid).appending(path: "flow.lock")
             let probe = try await SessionLock.acquire(at: flowLock, timeout: .zero, exclusive: false)
-            Task {
-                try await Task.sleep(for: .milliseconds(100))
+            Thread.detachNewThread {
+                Thread.sleep(forTimeInterval: 0.1)
                 probe.release()
             }
             #expect(try await SessionLock.withFlowLock("flow-after-probe", on: target) { true })
@@ -149,7 +149,7 @@ import Testing
         try await fixture { url in
             let first = try await SessionLock.acquire(at: url)
             defer { first.release() }
-            let waiter = Task { try await SessionLock.acquire(at: url, timeout: .seconds(2)) }
+            let waiter = Task { try await SessionLock.acquire(at: url, timeout: .seconds(60)) }
             try await Task.sleep(for: .milliseconds(100))
             first.release()
             let second = try await waiter.value

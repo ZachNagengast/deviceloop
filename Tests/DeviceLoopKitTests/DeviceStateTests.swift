@@ -137,7 +137,7 @@ private func target(kind: Target.Kind = .simulator, bootState: String = "booted"
 }
 
 /// Runs against a booted simulator: DEVICELOOP_TEST_SIMULATOR=<udid> xcrun swift test --filter DeviceStateLiveTests
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil))
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .sharedSimulator)
 struct DeviceStateLiveTests {
     @Test func captureObservesSimulatorSettings() async throws {
         let target = try await TargetResolver.resolve(ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"])

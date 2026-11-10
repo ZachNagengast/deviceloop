@@ -61,6 +61,7 @@ final class USBCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
 
     func run() async throws {
         try Paths.ensureDirectory(options.state)
+        try Recorder.requireNewVideo(options.output)
         try write("\(getpid())", to: "pid")
         let interrupt = InterruptFlag()
         defer { interrupt.remove() }
@@ -95,7 +96,6 @@ final class USBCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         }
         session.addInput(deviceInput)
         session.addOutput(output)
-        try? FileManager.default.removeItem(at: options.output)
         queue.sync { self.session = session }
         session.startRunning()
 

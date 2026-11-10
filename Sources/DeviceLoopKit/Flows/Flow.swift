@@ -158,7 +158,7 @@ public struct FlowStep: Sendable, Equatable {
                 action = .ui(.tap(try fields.target(), holdMs: try fields.int("ms", in: 1 ... 10_000) ?? 800))
             case "swipe":
                 let direction = try fields.require("direction", fields.string("direction"))
-                guard ["up", "down", "left", "right"].contains(direction) else {
+                guard UIStep.swipeDirections.contains(direction) else {
                     throw FlowFields.invalid(fields.child("direction"), "must be up, down, left or right.")
                 }
                 let on = try fields.fields("on", allowed: Self.targetKeys)?.target()

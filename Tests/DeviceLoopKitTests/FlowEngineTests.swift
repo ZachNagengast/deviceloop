@@ -290,6 +290,20 @@ import Testing
         #expect(failure?.message == "id=fixture.counter.value has label \"Count: 1\", expected \"Count: 2\".")
     }
 
+    @Test func mismatchEscapesControlCharactersFromTheApp() {
+        let failure = FlowCommands.failure(of: .label("Count: 1"), query: Self.counter, matches: [Self.match(label: "Count\n\u{1B}[2J")])
+        #expect(failure?.message == "id=fixture.counter.value has label \"Count\\n\\u{1B}[2J\", expected \"Count: 1\".")
+    }
+
+    @Test func labelCopiedFromTreeTextPassesTheAssert() {
+        #expect(FlowCommands.failure(of: .label("Count\\n1"), query: Self.counter, matches: [Self.match(label: "Count\n1")]) == nil)
+    }
+
+    @Test func mismatchPrintsTheExpectedTextEscaped() {
+        let failure = FlowCommands.failure(of: .label("Count\t2"), query: Self.counter, matches: [Self.match()])
+        #expect(failure?.message == "id=fixture.counter.value has label \"Count: 1\", expected \"Count\\t2\".")
+    }
+
     @Test func valueMustMatchExactly() {
         #expect(FlowCommands.failure(of: .value("On"), query: Self.counter, matches: [Self.match(value: "On")]) == nil)
         let failure = FlowCommands.failure(of: .value("on"), query: Self.counter, matches: [Self.match(value: "On")])
@@ -511,7 +525,7 @@ import Testing
 }
 
 /// Runs the example flows against a booted simulator: DEVICELOOP_TEST_SIMULATOR=<udid> xcrun swift test --filter FlowLiveTests
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .serialized)
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .serialized, .sharedSimulator)
 struct FlowLiveTests {
     static let host = "com.argmaxinc.deviceloop.host"
     let target: Target

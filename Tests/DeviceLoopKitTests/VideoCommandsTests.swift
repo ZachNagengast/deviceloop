@@ -244,6 +244,36 @@ import Testing
         #expect(throws: DeviceLoopError.self) { try USBCapture.Options(["--name", "Test iPhone", "--output", "/tmp/a.mp4"]) }
     }
 
+    @Test(arguments: [true, false])
+    func recordRefusesAnExistingOutputAndKeepsIt(folder: Bool) async throws {
+        let output = FileManager.default.temporaryDirectory.appending(path: "deviceloop-video-\(UUID().uuidString).mp4")
+        defer { try? FileManager.default.removeItem(at: output) }
+        if folder { try Paths.ensureDirectory(output) }
+        let kept = folder ? output.appending(path: "kept.txt") : output
+        try Data("kept".utf8).write(to: kept)
+        await #expect {
+            try await VideoCommands.record(target(.simulator), output: output, durationMs: 0)
+        } throws: {
+            ($0 as? DeviceLoopError)?.code == .badArguments
+        }
+        #expect(try Data(contentsOf: kept) == Data("kept".utf8))
+    }
+
+    @Test func captureHelperRefusesAnExistingOutputAndKeepsIt() async throws {
+        let folder = FileManager.default.temporaryDirectory.appending(path: "deviceloop-capture-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let output = try Paths.ensureDirectory(folder.appending(path: "video.mp4"))
+        let options = try USBCapture.Options([
+            "--name", "Test iPhone", "--output", output.path, "--state", folder.appending(path: "state").path,
+        ])
+        await #expect {
+            try await USBCapture(options).run()
+        } throws: {
+            ($0 as? DeviceLoopError)?.code == .badArguments
+        }
+        #expect(FileManager.default.fileExists(atPath: output.path))
+    }
+
     private func device(tunnel: String?, state: String = "connected") -> Target {
         Target(
             udid: "capture-test", identifier: "capture-test", name: "Capture test", kind: .device, deviceType: "iPhone",

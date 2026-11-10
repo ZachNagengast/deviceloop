@@ -140,12 +140,11 @@ public struct RunProvenance: Codable, Sendable, Equatable {
         return components[components.count - 4]
     }
 
-    /// The HEAD commit of the git checkout at `directory` and whether it has changes.
+    /// The HEAD commit of the git checkout at `directory` and whether it has changes, with its `core.fsmonitor` hook turned off.
     static func git(_ directory: URL) async throws -> Source {
-        let revision = try await Shell.run(["git", "-C", directory.path, "rev-parse", "HEAD"], timeout: .seconds(30))
-        let status = try await Shell.run(
-            ["git", "--no-optional-locks", "-C", directory.path, "status", "--porcelain", "--untracked-files=normal"],
-            timeout: .seconds(30))
+        let gitCommand = ["git", "-c", "core.fsmonitor=", "--no-optional-locks", "-C", directory.path]
+        let revision = try await Shell.run(gitCommand + ["rev-parse", "HEAD"], timeout: .seconds(30))
+        let status = try await Shell.run(gitCommand + ["status", "--porcelain", "--untracked-files=normal"], timeout: .seconds(30))
         guard revision.succeeded, status.succeeded else {
             throw DeviceLoopError(
                 .badArguments, "\(directory.path) is not a git checkout with a commit.", fix: "Pass a git checkout as the source.",

@@ -24,7 +24,6 @@ final class DeviceLoopRunner: XCTestCase {
             bind: environment[RunnerWire.Environment.bind],
             port: UInt16(environment[RunnerWire.Environment.port] ?? "") ?? 0,
             token: environment[RunnerWire.Environment.token] ?? "",
-            peer: environment[RunnerWire.Environment.peer],
             handler: { request in await router.handle(request) }
         )
         server.start(

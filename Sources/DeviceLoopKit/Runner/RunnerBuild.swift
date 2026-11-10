@@ -288,31 +288,31 @@ enum RunnerBuild {
         // Only local output and user-specific Xcode state are excluded. Resources of any type are inputs.
         let excluded: Set<String> = [".git", "xcuserdata", ".DS_Store"]
         let rootOutputs: Set<String> = [".build", "build", "DerivedData"]
-        func files(in directory: URL) throws -> [URL] {
-            var result: [URL] = []
+        func files(in directory: URL, relativePath: String) throws -> [(relativePath: String, url: URL)] {
+            var result: [(relativePath: String, url: URL)] = []
             for entry in try manager.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.isDirectoryKey, .isRegularFileKey]) {
-                if excluded.contains(entry.lastPathComponent)
-                    || (directory == root && rootOutputs.contains(entry.lastPathComponent))
-                {
+                let name = entry.lastPathComponent
+                if excluded.contains(name) || (relativePath.isEmpty && rootOutputs.contains(name)) {
                     continue
                 }
+                let entryPath = relativePath.isEmpty ? name : "\(relativePath)/\(name)"
                 let values = try entry.resourceValues(forKeys: [.isDirectoryKey, .isRegularFileKey])
                 if values.isDirectory == true {
-                    result += try files(in: entry)
+                    result += try files(in: entry, relativePath: entryPath)
                 } else if values.isRegularFile == true {
-                    result.append(entry)
+                    result.append((entryPath, entry))
                 }
             }
             return result
         }
-        let inputs = try files(in: root).sorted { $0.path < $1.path }
+        let inputs = try files(in: root, relativePath: "").sorted { $0.relativePath < $1.relativePath }
         guard !inputs.isEmpty else {
             throw DeviceLoopError(
                 .runnerBuildFailed, "The runner project has no build inputs.", fix: "Reinstall the runner resources and retry.")
         }
         for file in inputs {
-            append(Data(file.path.dropFirst(root.path.count + 1).utf8))
-            append(try Data(contentsOf: file))
+            append(Data(file.relativePath.utf8))
+            append(try Data(contentsOf: file.url))
         }
         return "\(simulator ? "sim" : "device")-\(hasher.finalize().map { String(format: "%02x", $0) }.joined())"
     }

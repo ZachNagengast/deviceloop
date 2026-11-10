@@ -352,7 +352,7 @@ enum MCPTools {
                 """,
             properties: [
                 "device": Param.string(
-                    "A UDID, a name or a unique part of it, `booted`, `usb` or `device`. Omit to check every device, booted simulator and simulator with an open state scope."
+                    "A UDID, a name or a unique part of it, `booted`, `usb` or `device`. Defaults to DEVICELOOP_DEVICE. Without either, checks every device, booted simulator and simulator with an open state scope."
                 )
             ],
             readOnly: true
@@ -505,6 +505,7 @@ enum MCPTools {
                 ),
             ],
             readOnly: false,
+            destructive: true,
             idempotent: true,
             failed: { $0.json["ok"] == false },
             run: applySettings
@@ -522,6 +523,7 @@ enum MCPTools {
             ],
             required: ["action"],
             readOnly: false,
+            destructive: true,
             idempotent: true,
             savingResult: false
         ) { target, arguments in
@@ -781,11 +783,13 @@ enum MCPTools {
     /// `LAT,LON`, or `clear` as nil coordinates.
     static func parseLocation(_ text: String) throws -> (latitude: Double?, longitude: Double?) {
         if text.lowercased() == "clear" { return (nil, nil) }
-        let parts = text.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
-        guard parts.count == 2, (-90 ... 90).contains(parts[0]), (-180 ... 180).contains(parts[1]) else {
+        let parts = text.split(separator: ",", omittingEmptySubsequences: false).map { Double($0.trimmingCharacters(in: .whitespaces)) }
+        guard parts.count == 2, let latitude = parts[0], let longitude = parts[1], (-90 ... 90).contains(latitude),
+            (-180 ... 180).contains(longitude)
+        else {
             throw DeviceLoopError(
                 .badArguments, "device_set location must be LAT,LON or clear, got \(text).", fix: "For example: 37.3349,-122.0090")
         }
-        return (parts[0], parts[1])
+        return (latitude, longitude)
     }
 }

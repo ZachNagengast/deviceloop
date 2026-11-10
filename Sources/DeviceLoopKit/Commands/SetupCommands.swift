@@ -661,7 +661,7 @@ struct DoctorReport: Encodable, Sendable {
                             "targets",
                             .warn,
                             "no iPhone or iPad paired and no booted simulator",
-                            fix: "Connect and unlock a device, or boot a simulator: xcrun simctl boot <udid>",
+                            fix: TargetResolver.noTargetsFix,
                             code: .deviceNotFound
                         )
                     )

@@ -861,7 +861,7 @@ private func device(developerMode: Bool = true) -> Target {
 }
 
 /// Runs against a booted simulator: DEVICELOOP_TEST_SIMULATOR=<udid> xcrun swift test --filter ParityLiveTests
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .serialized)
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["DEVICELOOP_TEST_SIMULATOR"] != nil), .serialized, .sharedSimulator)
 struct ParityLiveTests {
     let target: Target
 

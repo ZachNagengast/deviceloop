@@ -25,20 +25,21 @@ struct HTTPResponse: Sendable {
     }
 }
 
-/// One request per connection, Content-Length bodies only. Rejects anything that is not the CLI:
-/// wrong peer, missing token, browser `Origin` headers, non-JSON POST bodies.
+/// One request per connection, Content-Length bodies only. Rejects anything that is not the CLI once its headers arrive,
+/// before the body: missing token, browser `Origin` headers, non-JSON POST bodies.
 final class HTTPServer: @unchecked Sendable {
     typealias Handler = @Sendable (HTTPRequest) async -> HTTPResponse
 
     let queue = DispatchQueue(label: "deviceloop.runner.http")
     private let listener: NWListener
     private let token: String
-    private let peer: String?
     private let handler: Handler
     private let maxBodyBytes = 8 * 1024 * 1024
+    /// A connection that has not sent its whole header block within this time is closed.
+    private let headerTimeout: DispatchTimeInterval = .seconds(5)
 
     /// `bind` is the address to listen on (device tunnel address, or `::1` on a simulator).
-    init(bind: String?, port: UInt16, token: String, peer: String?, handler: @escaping Handler) throws {
+    init(bind: String?, port: UInt16, token: String, handler: @escaping Handler) throws {
         let parameters = NWParameters.tcp
         parameters.allowLocalEndpointReuse = true
         if let bind, !bind.isEmpty {
@@ -48,7 +49,6 @@ final class HTTPServer: @unchecked Sendable {
             listener = try NWListener(using: parameters, on: NWEndpoint.Port(rawValue: port) ?? .any)
         }
         self.token = token
-        self.peer = peer
         self.handler = handler
     }
 
@@ -63,12 +63,12 @@ final class HTTPServer: @unchecked Sendable {
         }
         listener.newConnectionHandler = { [weak self] connection in
             guard let self else { return }
-            guard self.isAllowed(connection.endpoint) else {
-                connection.cancel()
-                return
-            }
+            let header = HeaderState()
             connection.start(queue: self.queue)
-            self.receive(on: connection, buffer: Data())
+            self.queue.asyncAfter(deadline: .now() + self.headerTimeout) { [weak connection] in
+                if !header.parsed { connection?.cancel() }
+            }
+            self.receive(on: connection, buffer: Data(), header: header)
         }
         listener.start(queue: queue)
     }
@@ -77,32 +77,29 @@ final class HTTPServer: @unchecked Sendable {
         listener.cancel()
     }
 
-    private func isAllowed(_ endpoint: NWEndpoint) -> Bool {
-        guard let peer, !peer.isEmpty else { return true }
-        guard case .hostPort(let host, _) = endpoint else { return false }
-        let address = "\(host)".split(separator: "%").first.map(String.init) ?? ""
-        return address == peer
-    }
-
-    private func receive(on connection: NWConnection, buffer: Data) {
+    private func receive(on connection: NWConnection, buffer: Data, header: HeaderState) {
         connection.receive(minimumIncompleteLength: 1, maximumLength: 1 << 20) { [weak self] chunk, _, isComplete, error in
             guard let self else { return }
             var buffer = buffer
             if let chunk { buffer.append(chunk) }
-            switch Self.parse(buffer, maxBodyBytes: self.maxBodyBytes) {
-                case .incomplete where !isComplete && error == nil:
-                    self.receive(on: connection, buffer: buffer)
+            let parsed = Self.parse(buffer, maxBodyBytes: self.maxBodyBytes)
+            if !header.parsed, let head = parsed.head {
+                header.parsed = true
+                if let rejection = self.reject(head) {
+                    self.send(rejection, on: connection)
+                    return
+                }
+            }
+            switch parsed {
+                case .incomplete where !isComplete && error == nil, .headers where !isComplete && error == nil:
+                    self.receive(on: connection, buffer: buffer, header: header)
                 case .request(let request):
-                    if let rejection = self.reject(request) {
-                        self.send(rejection, on: connection)
-                        return
-                    }
                     let handler = self.handler
                     Task {
                         let response = await handler(request)
                         self.queue.async { self.send(response, on: connection) }
                     }
-                case .incomplete, .invalid:
+                case .incomplete, .headers, .invalid:
                     self.send(RunnerError.response(400, "bad_request", "Malformed HTTP request"), on: connection)
             }
         }
@@ -141,7 +138,17 @@ final class HTTPServer: @unchecked Sendable {
     enum ParseResult {
         case incomplete
         case invalid
+        /// The header block has arrived and the body has not. The request's body is empty.
+        case headers(HTTPRequest)
         case request(HTTPRequest)
+
+        /// The request line and headers, once the header block has parsed.
+        var head: HTTPRequest? {
+            switch self {
+                case .headers(let request), .request(let request): request
+                case .incomplete, .invalid: nil
+            }
+        }
     }
 
     static func parse(_ buffer: Data, maxBodyBytes: Int) -> ParseResult {
@@ -162,18 +169,22 @@ final class HTTPServer: @unchecked Sendable {
 
         let bodyLength = Int(headers["content-length"] ?? "0") ?? 0
         guard bodyLength >= 0, bodyLength <= maxBodyBytes else { return .invalid }
-        let bodyStart = headerEnd.upperBound
-        guard buffer.count - bodyStart >= bodyLength else { return .incomplete }
-
-        return .request(
-            HTTPRequest(
-                method: String(requestLine[0]),
-                path: URLComponents(string: String(requestLine[1]))?.path ?? "/",
-                headers: headers,
-                body: Data(buffer[bodyStart ..< (bodyStart + bodyLength)])
-            )
+        var request = HTTPRequest(
+            method: String(requestLine[0]),
+            path: URLComponents(string: String(requestLine[1]))?.path ?? "/",
+            headers: headers,
+            body: Data()
         )
+        let bodyStart = headerEnd.upperBound
+        guard buffer.count - bodyStart >= bodyLength else { return .headers(request) }
+        request.body = Data(buffer[bodyStart ..< (bodyStart + bodyLength)])
+        return .request(request)
     }
+}
+
+/// Whether a connection's header block has parsed. Read and written only on the server queue.
+private final class HeaderState: @unchecked Sendable {
+    var parsed = false
 }
 
 enum RunnerError {

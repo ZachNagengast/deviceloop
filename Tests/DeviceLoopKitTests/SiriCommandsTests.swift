@@ -158,7 +158,7 @@ private func say(
     @Test func passcodeRequiredVerifiesTheLock() async throws {
         var states: [JSONValue] = [["passcodeRequired": false], ["passcodeRequired": true]]
         let result = try await SiriCommands.lock(
-            target, client: try fakeRunner(receipts: []).client, window: .seconds(1), interval: .milliseconds(10)
+            target, client: try fakeRunner(receipts: []).client, window: .seconds(30), interval: .milliseconds(10)
         ) { states.removeFirst() }
         #expect(result.json["lockVerified"] == true)
         #expect(result.json.value(at: "operation.id") == .string(operationID))

@@ -56,6 +56,9 @@ import Testing
             ["alert": ["button": "Allow"]],
             ["launch": ["bundleID": "com.apple.Preferences", "arguments": ["-a"], "environment": ["B": "2", "A": "1"]]],
             ["tap": ["label": "General"]],
+            ["tap": ["label": "Welcome\\nBack"]],
+            ["assert": ["element": ["labelContains": "C:\\new"], "label": "C:\\new"]],
+            ["assert": ["element": ["id": "a"], "value": "a\\tb"]],
         ]
     }
 
@@ -153,6 +156,12 @@ import Testing
     @Test func resetNoneLaunchesTheAppWhenItIsNotRunning() throws {
         let source = try FlowExport.source(flow(steps: [["sleep": ["ms": 1]]])).source
         #expect(source.contains("        if app.state == .notRunning { app.launch() } else { app.activate() }\n"))
+    }
+
+    @Test func labelCopiedFromTreeTextIsExportedInBothForms() throws {
+        let source = try FlowExport.source(flow(steps: [["assert": ["element": ["label": "a\\tb"], "label": "a\\tb"]]])).source
+        #expect(source.contains(#"NSPredicate(format: "label == %@ OR label == %@", "a\\tb", "a\tb")"#))
+        #expect(source.contains(#"XCTAssertTrue(["a\\tb", "a\tb"].contains(element.label))"#))
     }
 
     @Test func emptyValueAssertAcceptsAMissingValue() throws {

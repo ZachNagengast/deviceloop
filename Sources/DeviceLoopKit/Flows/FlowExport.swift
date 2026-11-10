@@ -109,6 +109,12 @@ public enum FlowExport {
         return escaped + "\""
     }
 
+    /// `NSPredicate(format:)` source that compares `key` with each of `forms`.
+    static func predicate(_ key: String, _ comparison: String, _ forms: [String]) -> String {
+        let format = forms.map { _ in "\(key) \(comparison) %@" }.joined(separator: " OR ")
+        return "NSPredicate(format: \"\(format)\", \(forms.map(literal).joined(separator: ", ")))"
+    }
+
     /// Sets launch arguments and environment, then runs the `start` statement.
     static func launch(arguments: [String], environment: [String: String], _ start: String = "app.launch()") -> [String] {
         let pairs = environment.sorted { $0.key < $1.key }.map { "\(literal($0.key)): \(literal($0.value))" }
@@ -231,9 +237,26 @@ private struct StepWriter {
                         ]
                     case .label(let label):
                         let expected = FlowExport.literal(label)
+                        let forms = ElementQuery.forms(of: label)
+                        guard forms.count == 1 else {
+                            return [
+                                element,
+                                "let expectation = XCTNSPredicateExpectation(predicate: \(FlowExport.predicate("label", "==", forms)), object: element)",
+                                "_ = XCTWaiter.wait(for: [expectation], timeout: \(timeout))",
+                                "XCTAssertTrue([\(forms.map(FlowExport.literal).joined(separator: ", "))].contains(element.label))",
+                            ]
+                        }
                         return [
                             element, "_ = element.wait(for: \\.label, toEqual: \(expected), timeout: \(timeout))",
                             "XCTAssertEqual(element.label, \(expected))",
+                        ]
+                    case .value(let value) where ElementQuery.forms(of: value).count > 1:
+                        let forms = ElementQuery.forms(of: value)
+                        return [
+                            element,
+                            "let expectation = XCTNSPredicateExpectation(predicate: \(FlowExport.predicate("value", "==", forms)), object: element)",
+                            "_ = XCTWaiter.wait(for: [expectation], timeout: \(timeout))",
+                            "XCTAssertTrue([\(forms.map(FlowExport.literal).joined(separator: ", "))].contains(element.value as? String ?? \"\"))",
                         ]
                     case .value(let value):
                         // flow run reads a missing value as "".
@@ -276,9 +299,9 @@ private struct StepWriter {
         guard FlowExport.elementTypes.contains(type) else { throw Unsupported(reason: "\(type) is not an element type.") }
         var expression = "app.descendants(matching: .\(type))"
         if let id = query.id { expression += ".matching(identifier: \(FlowExport.literal(id)))" }
-        if let label = query.label { expression += ".matching(NSPredicate(format: \"label == %@\", \(FlowExport.literal(label))))" }
+        if let label = query.label { expression += ".matching(\(FlowExport.predicate("label", "==", ElementQuery.forms(of: label))))" }
         if let contains = query.labelContains {
-            expression += ".matching(NSPredicate(format: \"label CONTAINS[c] %@\", \(FlowExport.literal(contains))))"
+            expression += ".matching(\(FlowExport.predicate("label", "CONTAINS[c]", ElementQuery.forms(of: contains))))"
         }
         return expression
     }

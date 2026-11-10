@@ -215,6 +215,17 @@ import Testing
         #expect(error?.alternatives.isEmpty == false)
     }
 
+    @Test func noMatchPointsAtTheFullDeviceList() {
+        let notReady = targets.filter { !$0.isReady }
+        #expect(!notReady.isEmpty)
+        for selector in [nil, "no such device"] {
+            let error = #expect(throws: DeviceLoopError.self) { try TargetResolver.resolve(selector, in: notReady) }
+            #expect(error?.code == .deviceNotFound)
+            #expect(error?.fix?.contains("`deviceloop devices --all`") == true)
+            #expect(error?.fix?.contains("simctl boot") == (selector == nil))
+        }
+    }
+
     @Test func watchIsNotDrivable() {
         let error = #expect(throws: DeviceLoopError.self) { try TargetResolver.resolve("Test Apple Watch", in: targets) }
         #expect(error?.code == .deviceNotFound)

@@ -123,7 +123,7 @@ public enum FlowCommands {
 
     /// `json` with the typed text of `flow` as `[hidden]` while a run records, else `json`.
     static func saving(_ json: JSONValue, from flow: JSONValue) -> JSONValue {
-        RunStore.current == nil ? json : RunRecorder.hide(typedText(flow), in: json)
+        RunStore.current == nil ? json : RunRecorder.hide(RunRecorder.forms(hiding: typedText(flow)), in: json)
     }
 
     /// `json` with app.bundleID and timeoutMs replaced when given.
@@ -256,9 +256,9 @@ public enum FlowCommands {
     private static func mismatch(_ field: String, _ actual: String?, _ expected: String, on element: String, fix: String)
         -> DeviceLoopError?
     {
-        guard (actual ?? "") != expected else { return nil }
-        let has = actual.map { "\(field) \"\($0)\"" } ?? "no \(field)"
-        return DeviceLoopError(.assertionFailed, "\(element) has \(has), expected \"\(expected)\".", fix: fix)
+        guard !ElementQuery.forms(of: expected).contains(actual ?? "") else { return nil }
+        let has = actual.map { "\(field) \"\(UITree.escaped($0))\"" } ?? "no \(field)"
+        return DeviceLoopError(.assertionFailed, "\(element) has \(has), expected \"\(UITree.escaped(expected))\".", fix: fix)
     }
 
     /// The query in the `ui` step grammar, for example `id=login type=button`.

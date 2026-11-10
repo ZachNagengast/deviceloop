@@ -315,7 +315,8 @@ enum UIActions {
         let buttons = (try? alert.element.snapshot())?.descendantButtons ?? []
         let label: String?
         if let button = request.button {
-            label = buttons.first { $0.straightApostrophes == button.straightApostrophes }
+            let names = ElementQuery.forms(of: button).map(\.straightApostrophes)
+            label = buttons.first { names.contains($0.straightApostrophes) }
         } else {
             let action = request.action ?? "accept"
             let known = action == "dismiss" ? dismissLabels : acceptLabels
@@ -581,8 +582,15 @@ enum UIActions {
     private static func elementQuery(_ query: ElementQuery, in app: XCUIApplication) -> XCUIElementQuery {
         var result = app.descendants(matching: elementType(query.type))
         if let id = query.id { result = result.matching(identifier: id) }
-        if let label = query.label { result = result.matching(NSPredicate(format: "label == %@", label)) }
-        if let contains = query.labelContains { result = result.matching(NSPredicate(format: "label CONTAINS[c] %@", contains)) }
+        if let label = query.label {
+            let labels = ElementQuery.forms(of: label)
+            result = result.matching(
+                labels.count == 1 ? NSPredicate(format: "label == %@", label) : NSPredicate(format: "label IN %@", labels))
+        }
+        if let contains = query.labelContains {
+            let parts = ElementQuery.forms(of: contains).map { NSPredicate(format: "label CONTAINS[c] %@", $0) }
+            result = result.matching(parts.count == 1 ? parts[0] : NSCompoundPredicate(orPredicateWithSubpredicates: parts))
+        }
         if let predicate = query.predicate { result = result.matching(NSPredicate(format: predicate)) }
         return result
     }

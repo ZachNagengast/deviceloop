@@ -53,7 +53,7 @@ public enum RunRecorder {
         failed: (CommandResult) -> Bool = { _ in false }, _ body: () async throws -> CommandResult
     ) async throws -> CommandResult {
         guard let udid, let run = active(udid) else { return try await body() }
-        let hidden = hiding.filter { !$0.isEmpty }.sorted { $0.count > $1.count }
+        let hidden = forms(hiding: hiding)
         let started: RunEvent
         switch await run.append(RunEvent(kind: "started", command: command, args: hide(hidden, in: args))) {
             case .success(let event): started = event
@@ -135,6 +135,13 @@ public enum RunRecorder {
         let copy = try Paths.ensureDirectory(run.artifacts).appending(path: "\(seq)-\(file.lastPathComponent)")
         try FileManager.default.copyItem(at: file, to: copy)
         return "artifacts/\(copy.lastPathComponent)"
+    }
+
+    /// The strings in `hiding` and their spelling in UI text, without empty strings, longest first. Text without letters or
+    /// digits keeps only its own spelling, so typing a return does not hide every `\n` in the output.
+    static func forms(hiding: [String]) -> [String] {
+        let spelled = hiding.filter { $0.contains { $0.isLetter || $0.isNumber } }.map(UITree.escaped)
+        return Set((hiding + spelled).filter { !$0.isEmpty }).sorted { ($0.count, $0) > ($1.count, $1) }
     }
 
     static func hide(_ hidden: [String], in error: DeviceLoopError) -> DeviceLoopError {

@@ -273,6 +273,23 @@ import Testing
         }
     }
 
+    @Test func comparisonFileNamingAnotherIDIsRefused() async throws {
+        try await inFolder { folder, runs, exportFolder in
+            try await plantedRun("run-a", in: runs)
+            try await plantedRun("run-b", in: runs)
+            let (comparison, directory) = try RunComparison.write(baseline: "run-a", candidate: "run-b", in: runs)
+            let file = directory.appending(path: "comparison.json")
+            let contents = try String(contentsOf: file, encoding: .utf8)
+            try contents.replacingOccurrences(of: "\"\(comparison.id)\"", with: "\"../../escaped\"").write(
+                to: file, atomically: true, encoding: .utf8)
+            let error = await #expect(throws: DeviceLoopError.self) {
+                try await export(run: nil, comparison: comparison.id, from: runs, to: exportFolder)
+            }
+            #expect(error?.code == .badArguments)
+            #expect(try FileManager.default.contentsOfDirectory(atPath: folder.path) == ["runs"])
+        }
+    }
+
     @Test func typedTextInComparisonTreeDifferencesIsHidden() async throws {
         try await inFolder { _, runs, exportFolder in
             let baseline = try await plantedRun("run-a", in: runs)

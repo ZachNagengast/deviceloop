@@ -170,6 +170,16 @@ import Testing
         }
     }
 
+    @Test func runnerErrorsPrintAppTextEscaped() throws {
+        let failure = WireError(code: "element_ambiguous", message: "Alert buttons: \"OK\nFix: x\"", alternatives: ["OK\nFix: x"])
+        let data = try JSONEncoder().encode(WireResponse<WireEmpty>(ok: false, error: failure))
+        let error = #expect(throws: DeviceLoopError.self) {
+            try RunnerClient.decodeResponse(data, path: RunnerWire.Path.alert, method: "POST", as: WireEmpty.self)
+        }
+        #expect(error?.message == "Alert buttons: \"OK\\nFix: x\"")
+        #expect(error?.alternatives == ["OK\\nFix: x"])
+    }
+
     @Test func requestsCarryEpochAndStableOperationIdentity() throws {
         let client = RunnerClient(baseURL: URL(string: "http://localhost:1234")!, token: "test", epoch: "test-epoch")
         let request = try client.request(

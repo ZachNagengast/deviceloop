@@ -190,6 +190,17 @@ import Testing
         }
     }
 
+    @Test func checkoutUnderPrivateHasTheSameIdentity() throws {
+        try fixture { root in
+            let temporary = URL(filePath: "/private" + FileManager.default.temporaryDirectory.path).appending(path: UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: temporary) }
+            try write("first", to: "Host/App.swift", in: root)
+            try write("first", to: "Host/App.swift", in: temporary)
+            try write("output", to: "build/Products/Runner.app/Runner", in: temporary)
+            #expect(try key(root) == key(temporary))
+        }
+    }
+
     @Test func localOutputsAndUserDataDoNotInvalidateCache() throws {
         try fixture { root in
             try write("source", to: "Host/App.swift", in: root)

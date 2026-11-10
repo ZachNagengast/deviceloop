@@ -24,8 +24,6 @@ public enum RunnerWire {
         public static let token = "DEVICELOOP_TOKEN"
         /// Address to bind: the device side of the CoreDevice tunnel, or `::1` on a simulator.
         public static let bind = "DEVICELOOP_BIND"
-        /// Only this peer address may connect: the Mac side of the tunnel, or `::1`.
-        public static let peer = "DEVICELOOP_PEER"
         public static let port = "DEVICELOOP_PORT"
         /// JSON `MeasureScenario` for a `DeviceLoopMeasure` test.
         public static let scenario = "DEVICELOOP_SCENARIO"
@@ -265,6 +263,34 @@ public struct ElementQuery: Codable, Sendable, Equatable {
         self.labelContains = labelContains
         self.predicate = predicate
         self.index = index
+    }
+
+    /// `text`, then `text` with the `\\`, `\n`, `\r`, `\t` and `\u{1B}` escapes of `ui tree` text read back when that
+    /// differs, so a label copied from the tree matches. Identifiers are matched as typed.
+    public static func forms(of text: String) -> [String] {
+        let escapes: [Unicode.Scalar: Unicode.Scalar] = ["\\": "\\", "n": "\n", "r": "\r", "t": "\t"]
+        var rest = Substring(text).unicodeScalars
+        var unescaped = String.UnicodeScalarView()
+        while let scalar = rest.popFirst() {
+            guard scalar == "\\", let next = rest.first else {
+                unescaped.append(scalar)
+                continue
+            }
+            if let replacement = escapes[next] {
+                rest.removeFirst()
+                unescaped.append(replacement)
+            } else if next == "u", rest.dropFirst().first == "{", let close = rest.prefix(10).firstIndex(of: "}"),
+                case let digits = String(String.UnicodeScalarView(rest[rest.index(rest.startIndex, offsetBy: 2) ..< close])),
+                digits.allSatisfy(\.isHexDigit), let value = UInt32(digits, radix: 16), let decoded = Unicode.Scalar(value)
+            {
+                rest = rest[rest.index(after: close)...]
+                unescaped.append(decoded)
+            } else {
+                unescaped.append(scalar)
+            }
+        }
+        let read = String(unescaped)
+        return read == text ? [text] : [text, read]
     }
 }
 

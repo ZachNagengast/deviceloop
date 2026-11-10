@@ -126,6 +126,20 @@ import Testing
         #expect(validationCode(.drag(from: WirePoint(x: 10, y: 10), to: WirePoint(x: 20, y: .infinity))) == .badArguments)
     }
 
+    @Test func unknownSwipeDirectionIsBadArguments() {
+        #expect(validationCode(.swipe(direction: "sideways")) == .badArguments)
+        for direction in UIStep.swipeDirections {
+            #expect(validationCode(.swipe(direction: direction)) == nil)
+        }
+    }
+
+    @Test func unknownButtonIsBadArguments() {
+        #expect(validationCode(.press(button: "back")) == .badArguments)
+        for button in UIStep.buttons {
+            #expect(validationCode(.press(button: button)) == nil)
+        }
+    }
+
     @Test func performRejectsAnInvalidStepBeforeConnecting() async {
         var target = testSession().target
         target.platform = "tvOS"
@@ -400,6 +414,53 @@ import Testing
         )
         #expect(probed == ["fd00::1"])
         #expect(session?.info.host == "fd00::1")
+    }
+
+    @Test func unchangedHostAnsweringWithADifferentEpochIsNotReused() async throws {
+        let target = testTarget()
+        defer { try? FileManager.default.removeItem(at: Paths.session(for: target.udid)) }
+        try SessionFile(udid: target.udid, host: "::1", port: 1234, token: "test-only", pid: 0, sessionEpoch: UUID().uuidString).write()
+        do {
+            _ = try await RunnerSession.reattach(target, probe: { _, _ in health() }, exited: { _ in false })
+            Issue.record("A server with another session epoch was reused")
+        } catch {
+            #expect((error as? DeviceLoopError)?.code == .runnerUnreachable)
+        }
+        #expect(SessionFile.read(for: target.udid) != nil)
+    }
+
+    @Test func unchangedHostAnsweringWithADifferentEpochAfterTheRunnerExitedDiscardsTheSession() async throws {
+        let target = testTarget()
+        defer { try? FileManager.default.removeItem(at: Paths.session(for: target.udid)) }
+        try SessionFile(udid: target.udid, host: "::1", port: 1234, token: "test-only", pid: 0, sessionEpoch: UUID().uuidString).write()
+        let session = try await RunnerSession.reattach(target, probe: { _, _ in health() }, exited: { _ in true })
+        #expect(session == nil)
+        #expect(SessionFile.read(for: target.udid) == nil)
+    }
+
+    /// Stops `target` with its session file pointing at a server that answers health with `answeredEpoch`, and counts shutdowns.
+    private func stop(_ target: Target, storedEpoch: String, answeredEpoch: String) async throws -> (stopped: Bool, shutdowns: Int) {
+        let reply = try JSONEncoder().encode(WireResponse(ok: true, result: health(epoch: answeredEpoch)))
+        let server = try #require(LoopbackServer(answering: String(decoding: reply, as: UTF8.self)))
+        defer { server.stop() }
+        try SessionFile(udid: target.udid, host: "::1", port: server.port, token: "test-only", pid: 0, sessionEpoch: storedEpoch).write()
+        var shutdowns = 0
+        let stopped = try await RunnerSession.stopExisting(target, shutdown: { _ in shutdowns += 1 })
+        return (stopped, shutdowns)
+    }
+
+    @Test func stopShutsDownTheRunnerWithTheRecordedEpoch() async throws {
+        let target = testTarget()
+        defer { try? FileManager.default.removeItem(at: Paths.session(for: target.udid)) }
+        let epoch = UUID().uuidString
+        #expect(try await stop(target, storedEpoch: epoch, answeredEpoch: epoch) == (true, 1))
+    }
+
+    @Test func stopDiscardsALegacySessionFileWhenAnotherEpochAnswers() async throws {
+        let target = testTarget()
+        defer { try? FileManager.default.removeItem(at: Paths.session(for: target.udid)) }
+        #expect(try await stop(target, storedEpoch: UUID().uuidString, answeredEpoch: UUID().uuidString) == (false, 0))
+        #expect(SessionFile.read(for: target.udid) == nil)
     }
 
     @Test func hostAppIsReinstalledWhenARebuildInPlaceEmbedsANewProfile() async throws {

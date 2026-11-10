@@ -122,17 +122,25 @@ public enum UICommands {
         return CommandResult(text: lines.joined(separator: "\n"), json: json)
     }
 
+    /// The timeout of each `ui do` step, which is also the longest sleep a step can ask for.
+    static let stepTimeoutMs = 120_000
+
+    /// Checks every step of `ui do` before any of them runs.
+    public static func validate(_ steps: [UIStep]) throws {
+        for step in steps {
+            try step.validate()
+            if case .sleep(let ms) = step, ms > stepTimeoutMs {
+                throw DeviceLoopError.usage("Sleep must be at most \(stepTimeoutMs) ms, not \(ms).")
+            }
+        }
+    }
+
     /// `deviceloop ui do`: runs `steps` over one runner connection through the flow engine, and stops at the first
     /// step that does not pass. Each step passes or fails as it does in a flow. With no `app`, each step acts on the
     /// app in front. `screenshot` captures the screen after the steps, also when one fails.
     public static func perform(_ steps: [UIStep], on target: Target, app: String?, screenshot: Bool) async throws -> CommandResult {
-        let timeoutMs = 120_000
-        for step in steps {
-            try step.validate()
-            if case .sleep(let ms) = step, ms > timeoutMs {
-                throw DeviceLoopError.usage("Sleep must be at most \(timeoutMs) ms, not \(ms).")
-            }
-        }
+        let timeoutMs = stepTimeoutMs
+        try validate(steps)
         let session = try await connect(target)
         let output = StepOutput()
         let flowSteps = steps.map { FlowStep(.ui($0), timeoutMs: timeoutMs) }
@@ -188,9 +196,9 @@ public enum UICommands {
     /// One line for an element: type, label, id, value, frame, and `not hittable` when known.
     static func describe(_ match: FoundElement) -> String {
         var parts = [match.type]
-        if let label = match.label { parts.append("\"\(label)\"") }
-        if let id = match.id { parts.append("id=\(id)") }
-        if let value = match.value, !value.isEmpty { parts.append("value=\(value)") }
+        if let label = match.label { parts.append("\"\(UITree.escaped(label))\"") }
+        if let id = match.id { parts.append("id=\(UITree.escaped(id))") }
+        if let value = match.value, !value.isEmpty { parts.append("value=\(UITree.escaped(value))") }
         if match.frame.count == 4 { parts.append("[" + match.frame.map { String(Int($0)) }.joined(separator: ",") + "]") }
         if match.hittable == false { parts.append("not hittable") }
         return parts.joined(separator: " ")
@@ -230,11 +238,7 @@ public enum UICommands {
     public static func alert(_ target: Target, button: String?, action: String?) async throws -> CommandResult {
         let session = try await connect(target, focusing: nil)
         if button == nil, action == nil {
-            let alert = try await session.client.get(RunnerWire.Path.alert, as: AlertResult.self)
-            guard alert.present else { return CommandResult(text: "\(target.summary)\nno alert", json: ["present": false]) }
-            let text = [target.summary, alert.title ?? "alert", alert.message ?? "", "buttons: \(alert.buttons.joined(separator: ", "))"]
-                .filter { !$0.isEmpty }.joined(separator: "\n")
-            return CommandResult(text: text, json: try JSONValue(encoding: alert))
+            return try alertRead(target, alert: try await session.client.get(RunnerWire.Path.alert, as: AlertResult.self))
         }
         let reply: ActionResult
         do {
@@ -250,10 +254,19 @@ public enum UICommands {
         return alertTapped(target, reply: reply, button: button, action: action)
     }
 
+    /// The alert's title, message and buttons on one line each, or `no alert`.
+    static func alertRead(_ target: Target, alert: AlertResult) throws -> CommandResult {
+        guard alert.present else { return CommandResult(text: "\(target.summary)\nno alert", json: ["present": false]) }
+        let title = alert.title.map(UITree.escaped) ?? "alert"
+        let buttons = alert.buttons.map(UITree.escaped).joined(separator: ", ")
+        let lines = [target.summary, title, alert.message.map(UITree.escaped) ?? "", "buttons: \(buttons)"]
+        return CommandResult(text: lines.filter { !$0.isEmpty }.joined(separator: "\n"), json: try JSONValue(encoding: alert))
+    }
+
     /// Names the button the runner tapped. A runner that does not report it falls back to `button`, then `action`.
     static func alertTapped(_ target: Target, reply: ActionResult, button: String?, action: String?) -> CommandResult {
         let label = reply.button ?? button
-        let line = label.map { "tapped \"\($0)\"" } ?? "tapped \(action ?? "")"
+        let line = label.map { "tapped \"\(UITree.escaped($0))\"" } ?? "tapped \(action ?? "")"
         return CommandResult(text: "\(target.summary)\n\(line)", json: ["tapped": .string(label ?? action ?? "")])
     }
 
@@ -390,7 +403,7 @@ public enum UICommands {
             case .drag(let from, let to, _, _):
                 return ("dragged \(Int(from.x)),\(Int(from.y)) to \(Int(to.x)),\(Int(to.y))", reply)
             case .type(let text, let into, let clear):
-                guard into != nil else { return ("typed \"\(text)\"", reply) }
+                guard into != nil else { return ("typed \"\(UITree.escaped(text))\"", reply) }
                 let (line, result) = typed(text, clear: clear, result: reply.result)
                 reply.result = result
                 return (line, reply)
@@ -444,9 +457,11 @@ public enum UICommands {
         }
         let expected = (clear ? "" : result.previousValue ?? "") + text
         result.textVerified = result.readBack == expected
-        guard let readBack = result.readBack else { return ("typed \"\(text)\", not verified: the field could not be read", result) }
-        if readBack == expected { return ("typed \"\(text)\", field reads \"\(readBack)\"", result) }
-        return ("typed \"\(text)\", not verified: field reads \"\(readBack)\", expected \"\(expected)\"", result)
+        let typedPrefix = "typed \"\(UITree.escaped(text))\""
+        guard let readBack = result.readBack else { return ("\(typedPrefix), not verified: the field could not be read", result) }
+        let reads = "field reads \"\(UITree.escaped(readBack))\""
+        if readBack == expected { return ("\(typedPrefix), \(reads)", result) }
+        return ("\(typedPrefix), not verified: \(reads), expected \"\(UITree.escaped(expected))\"", result)
     }
 
     /// The element query a tap, swipe or type step targets, or nil.

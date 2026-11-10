@@ -78,7 +78,8 @@ extension MCPTools {
                 "clear_location": Param.boolean(
                     "Clear the simulated location. The location before the scope cannot be read, so it is lost."),
             ],
-            readOnly: false
+            readOnly: false,
+            destructive: true
         ) { target, arguments in
             try await StateCommands.restore(
                 target, dryRun: arguments.bool("dry_run") ?? false, overwriteConflicts: arguments.bool("overwrite_conflicts") ?? false,

@@ -113,8 +113,8 @@ import Testing
         let destructive = Set(tools.filter { $0.value(at: "annotations.destructiveHint") == true }.compactMap { $0["name"]?.string })
         #expect(
             destructive == [
-                "app_uninstall", "device_lock", "system_control", "device_siri", "app_files", "flow_run", "ui_tap", "ui_type", "ui_swipe",
-                "ui_drag", "ui_press", "ui_alert", "video_capture",
+                "app_uninstall", "device_set", "pasteboard", "device_lock", "system_control", "device_siri", "state_restore", "app_files",
+                "flow_run", "ui_tap", "ui_type", "ui_swipe", "ui_drag", "ui_press", "ui_alert", "video_capture",
             ])
     }
 
@@ -216,6 +216,23 @@ import Testing
         #expect(result.json.value(at: "appearance.userInterfaceStyle") == "dark")
         let deviceSet = try #require(MCPTools.all.first { $0.name == "device_set" })
         #expect(deviceSet.failed(result))
+    }
+
+    @Test func deviceSetRejectsALocationThatIsNotLatLon() async throws {
+        let deviceSet = try #require(MCPTools.all.first { $0.name == "device_set" })
+        for location in ["37.3,abc,-122", "1,,2", "91,0"] {
+            let reply = await deviceSet.call(["location": .string(location)], resolve: { _ in Self.simulator() }, log: Self.discardedLog)
+            #expect(reply.value(at: "structuredContent.error.code") == "bad_arguments")
+        }
+    }
+
+    @Test func deviceSetLocationTakesLatLonOrClear() throws {
+        let set = try MCPTools.parseLocation("37.3349, -122.0090")
+        #expect([set.latitude, set.longitude] == [37.3349, -122.009])
+        for clear in ["clear", "CLEAR"] {
+            let cleared = try MCPTools.parseLocation(clear)
+            #expect([cleared.latitude, cleared.longitude] == [nil, nil])
+        }
     }
 
     @Test func missingRequiredArgumentIsAToolError() async throws {

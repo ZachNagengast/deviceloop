@@ -13,7 +13,7 @@ public enum PrepareCommands {
             throw DeviceLoopError(
                 .deviceNotFound,
                 "No iPhone or iPad paired and no booted simulator.",
-                fix: "Connect and unlock a device, or boot a simulator: xcrun simctl boot <udid>"
+                fix: TargetResolver.noTargetsFix
             )
         }
         return targets

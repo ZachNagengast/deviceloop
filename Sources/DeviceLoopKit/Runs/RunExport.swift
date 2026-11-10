@@ -42,6 +42,11 @@ enum RunExport {
                 throw DeviceLoopError(
                     .badArguments, "No readable comparison at \(folder.path).", fix: "Pass a comparison ID that run compare printed.")
             }
+            guard decoded.id == comparison else {
+                throw DeviceLoopError(
+                    .badArguments, "comparison.json in \(folder.path) names another comparison.",
+                    fix: "Pass a comparison ID that run compare printed.")
+            }
             compared = (decoded, folder)
         }
         let runIDs = compared.map { [$0.comparison.baseline.id, $0.comparison.candidate.id] } ?? [id ?? ""]

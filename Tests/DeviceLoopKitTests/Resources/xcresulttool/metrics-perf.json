@@ -1,0 +1,76 @@
+[
+  {
+    "testIdentifier" : "Performance/testClock()",
+    "testIdentifierURL" : "test://com.apple.xcode/SuiteFixture/SuiteFixtureUITests/Performance/testClock",
+    "testRuns" : [
+      {
+        "device" : {
+          "deviceId" : "00000000-0000-0000-0000-000000000108",
+          "deviceName" : "iPhone 15 Pro Max"
+        },
+        "metrics" : [
+          {
+            "baselineAverage" : 0,
+            "baselineName" : "",
+            "displayName" : "Clock Monotonic Time",
+            "identifier" : "com.apple.dt.XCTMetric_Clock.time.monotonic",
+            "maxPercentRegression" : 10,
+            "maxPercentRelativeStandardDeviation" : 10,
+            "maxRegression" : 0,
+            "maxStandardDeviation" : 10,
+            "measurements" : [
+              0.05313682,
+              0.028000499,
+              0.025957223,
+              0.021398597000000002,
+              0.027501570000000003
+            ],
+            "polarity" : "prefers smaller",
+            "unitOfMeasurement" : "s"
+          }
+        ],
+        "testPlanConfiguration" : {
+          "configurationId" : "1",
+          "configurationName" : "Test Scheme Action"
+        }
+      }
+    ]
+  },
+  {
+    "testIdentifier" : "Performance/testLaunch()",
+    "testIdentifierURL" : "test://com.apple.xcode/SuiteFixture/SuiteFixtureUITests/Performance/testLaunch",
+    "testRuns" : [
+      {
+        "device" : {
+          "deviceId" : "00000000-0000-0000-0000-000000000108",
+          "deviceName" : "iPhone 15 Pro Max"
+        },
+        "metrics" : [
+          {
+            "baselineAverage" : 0,
+            "baselineName" : "",
+            "displayName" : "Duration (AppLaunch)",
+            "identifier" : "com.apple.dt.XCTMetric_ApplicationLaunch-AppLaunch.duration",
+            "maxPercentRegression" : 10,
+            "maxPercentRelativeStandardDeviation" : 10,
+            "maxRegression" : 0,
+            "maxStandardDeviation" : 10,
+            "measurements" : [
+              2.60815625,
+              2.636487208,
+              2.538586083,
+              2.454572084,
+              2.582291833
+            ],
+            "polarity" : "prefers smaller",
+            "unitOfMeasurement" : "s"
+          }
+        ],
+        "testPlanConfiguration" : {
+          "configurationId" : "1",
+          "configurationName" : "Test Scheme Action"
+        }
+      }
+    ]
+  }
+]

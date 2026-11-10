@@ -1,0 +1,396 @@
+{
+  "schema": "deviceloop.validation-summary/1",
+  "date": "2026-10-22",
+  "device": "iPhone 15 Pro Max",
+  "os": "iOS 27.0",
+  "display": "120 Hz ProMotion, 60 fps USB capture. The traced run presented at 60 Hz.",
+  "app": "A test app that moved a square for 800 ms from a move link. Its stall parameter blocks the main thread at 40 percent of the move, and driver=frames recomputes the position on the main thread every frame.",
+  "captured": [
+    {
+      "recording": "20261022-233128",
+      "driver": "swiftui",
+      "stallMs": 0,
+      "analyzer": "before fix",
+      "animationMs": 783.3,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 4
+    },
+    {
+      "recording": "20261022-233136",
+      "driver": "swiftui",
+      "stallMs": 0,
+      "analyzer": "before fix",
+      "animationMs": 783.3,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 4
+    },
+    {
+      "recording": "20261022-233146",
+      "driver": "swiftui",
+      "stallMs": 100,
+      "analyzer": "before fix",
+      "animationMs": 783.3,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 6
+    },
+    {
+      "recording": "20261022-233156",
+      "driver": "swiftui",
+      "stallMs": 100,
+      "analyzer": "before fix",
+      "animationMs": 783.3,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 5
+    },
+    {
+      "recording": "20261022-233310",
+      "driver": "frames",
+      "stallMs": 0,
+      "analyzer": "before fix",
+      "animationMs": 800,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 5
+    },
+    {
+      "recording": "20261022-233318",
+      "driver": "frames",
+      "stallMs": 0,
+      "analyzer": "before fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.033,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        }
+      ],
+      "rating": "good",
+      "recorderDrops": 3
+    },
+    {
+      "recording": "20261022-233328",
+      "driver": "frames",
+      "stallMs": 100,
+      "analyzer": "before fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.117,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        },
+        {
+          "at": 1.533,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 4,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 3
+    },
+    {
+      "recording": "20261022-233339",
+      "driver": "frames",
+      "stallMs": 100,
+      "analyzer": "before fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.133,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        },
+        {
+          "at": 1.55,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 5,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 8
+    },
+    {
+      "recording": "20261022-233350",
+      "driver": "frames",
+      "stallMs": 200,
+      "analyzer": "before fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.2,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        }
+      ],
+      "rating": "good",
+      "recorderDrops": 13
+    },
+    {
+      "recording": "20261022-233531",
+      "driver": "frames",
+      "stallMs": 200,
+      "analyzer": "first fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.583,
+          "durationMs": 183.3,
+          "kind": "jump",
+          "repeatedFrames": 9,
+          "missedSlots": 11
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 7
+    },
+    {
+      "recording": "20261022-233539",
+      "driver": "frames",
+      "stallMs": 200,
+      "analyzer": "first fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.6,
+          "durationMs": 200,
+          "kind": "jump",
+          "repeatedFrames": 11,
+          "missedSlots": 12
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 5
+    },
+    {
+      "recording": "20261022-233624",
+      "driver": "frames",
+      "stallMs": 100,
+      "analyzer": "before fix",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.533,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 5,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 4,
+      "instruments": true
+    },
+    {
+      "recording": "20261023-000924",
+      "driver": "frames",
+      "stallMs": 200,
+      "analyzer": "final",
+      "animationMs": 800,
+      "hitches": [
+        {
+          "at": 1.7,
+          "durationMs": 183.3,
+          "kind": "jump",
+          "repeatedFrames": 10,
+          "missedSlots": 11
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 11
+    },
+    {
+      "recording": "20261023-000932",
+      "driver": "frames",
+      "stallMs": 0,
+      "analyzer": "final",
+      "animationMs": 800,
+      "hitches": [],
+      "rating": "good",
+      "recorderDrops": 3
+    },
+    {
+      "recording": "20261023-000942",
+      "driver": "frames",
+      "stallMs": 200,
+      "analyzer": "final",
+      "animationMs": 816.7,
+      "hitches": [
+        {
+          "at": 1.567,
+          "durationMs": 183.3,
+          "kind": "jump",
+          "repeatedFrames": 10,
+          "missedSlots": 11
+        }
+      ],
+      "rating": "severe",
+      "recorderDrops": 2
+    }
+  ],
+  "reanalyzedWithFinalAnalyzer": [
+    {
+      "recording": "20261022-233310",
+      "hitches": [],
+      "rating": "good"
+    },
+    {
+      "recording": "20261022-233318",
+      "hitches": [
+        {
+          "at": 1.033,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        }
+      ],
+      "rating": "good"
+    },
+    {
+      "recording": "20261022-233328",
+      "hitches": [
+        {
+          "at": 1.117,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        },
+        {
+          "at": 1.533,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 4,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233339",
+      "hitches": [
+        {
+          "at": 1.133,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        },
+        {
+          "at": 1.55,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 5,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233350",
+      "hitches": [
+        {
+          "at": 1.2,
+          "durationMs": 16.7,
+          "kind": "delay",
+          "repeatedFrames": 0,
+          "missedSlots": 1
+        },
+        {
+          "at": 1.7,
+          "durationMs": 183.3,
+          "kind": "jump",
+          "repeatedFrames": 9,
+          "missedSlots": 11
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233531",
+      "hitches": [
+        {
+          "at": 1.583,
+          "durationMs": 183.3,
+          "kind": "jump",
+          "repeatedFrames": 9,
+          "missedSlots": 11
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233539",
+      "hitches": [
+        {
+          "at": 1.6,
+          "durationMs": 200,
+          "kind": "jump",
+          "repeatedFrames": 11,
+          "missedSlots": 12
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233601",
+      "hitches": [
+        {
+          "at": 2.033,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 2,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe"
+    },
+    {
+      "recording": "20261022-233624",
+      "hitches": [
+        {
+          "at": 1.533,
+          "durationMs": 100,
+          "kind": "jump",
+          "repeatedFrames": 5,
+          "missedSlots": 6
+        }
+      ],
+      "rating": "severe"
+    }
+  ],
+  "excluded": [
+    {
+      "recording": "20261023-000810",
+      "reason": "The screen had dimmed. The motion was the screen waking, not the move (inferred from the energy curve)."
+    }
+  ],
+  "instruments": {
+    "frameDrivenStall": "Attached to the test app during a 100 ms frame-driven stall: no hitch rows, a 116.7 ms gap in displayed surfaces 333 ms into the motion. DeviceLoop reported a 100 ms jump about 350 ms into the motion.",
+    "settingsLaunch": "All-processes trace: a 350 ms launch hitch on Preferences with no gap in displayed surfaces, and two 16.7 ms late frames (one swap listed under two processes). DeviceLoop reported a 783 ms animation with no candidates."
+  },
+  "limits": [
+    "One device. The iPad Air and the iPhone 13 Pro were not part of the animation comparison.",
+    "Hitches shorter than 16.7 ms cannot show in a 60 fps capture.",
+    "Instruments measures a hitch as a frame that arrives late, so this trace suggests it does not count frames the app never produced.",
+    "Offline re-analysis has no recorder drop times and does not apply the USB repeated-frame rule.",
+    "A 16.7 ms delay with no repeated frames at motion start appeared in 4 of 12 frame-driven recordings and is not attributed to device or recorder."
+  ]
+}

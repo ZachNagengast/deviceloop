@@ -1,0 +1,41 @@
+{
+  "schema": "deviceloop.validation-summary/1",
+  "date": "2026-11-08",
+  "device": "iPhone 15 Pro Max simulator",
+  "os": "iOS 27.0 (24A434)",
+  "xcode": "27.2 (27B52)",
+  "command": "deviceloop siri say \"what time is it\"",
+  "activateWorks": true,
+  "siriUIAppears": true,
+  "trials": [
+    {
+      "phrase": "what time is it",
+      "accepted": "accepted",
+      "acceptSeconds": 0.21,
+      "holdMilliseconds": 4755,
+      "receipt": {
+        "phase": "finished",
+        "responseStatus": 200,
+        "ok": true,
+        "xctestIssues": []
+      },
+      "foregroundAfter": "com.apple.siri",
+      "note": "The runner-free screenshot 3 s after acceptance showed the Siri request field with the phrase. The screenshot after the receipt finished showed Siri's clock answer."
+    },
+    {
+      "phrase": "what time is it",
+      "accepted": "accepted",
+      "acceptSeconds": 0.19,
+      "holdMilliseconds": 59,
+      "receipt": {
+        "phase": "finished",
+        "responseStatus": 200,
+        "ok": true,
+        "xctestIssues": []
+      },
+      "foregroundAfter": "com.apple.siri",
+      "note": "142 s after trial 1, in a different runner session. The screenshot 0.2 s after the receipt finished showed the Siri request field with the phrase."
+    }
+  ],
+  "notRun": "iOS 27.2 and iOS 18.5 simulator runtimes"
+}

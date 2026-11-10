@@ -1,0 +1,132 @@
+{
+  "schema": "deviceloop.validation-summary/1",
+  "date": "2026-10-22",
+  "xcode": "27.1 (27A9275)",
+  "protocolRevision": 3,
+  "devices": [
+    {
+      "device": "iPhone 15 Pro Max",
+      "os": "iOS 27.0",
+      "connection": "USB, CoreDevice tunnel",
+      "binarySHA256": "8597bc5fa6e8548383c487d80d1cb51dae1c195a33a40fbf96d5823ce0f41efb",
+      "fixture": {
+        "status": "passed",
+        "checks": 13
+      },
+      "operations": {
+        "status": "passed",
+        "checks": 40
+      },
+      "lifecycle": {
+        "status": "passed",
+        "checks": [
+          "old credential removed by stop",
+          "two concurrent starts share one endpoint",
+          "new credential mode 0600",
+          "restart issues a new epoch",
+          "previous-epoch receipt lookup returns session_mismatch"
+        ]
+      },
+      "siri": [
+        {
+          "phrase": "what time is it",
+          "acceptSeconds": 0.23,
+          "xctestCallMs": 134075,
+          "receiptStatus": 500,
+          "xctestIssues": [
+            "Timed out waiting for Siri to activate",
+            "Application 'com.apple.siri' has not loaded accessibility"
+          ],
+          "screen": "Siri's answer visible during and after the hold"
+        },
+        {
+          "phrase": "set a timer",
+          "acceptSeconds": 0.4,
+          "xctestCallMs": 130507,
+          "receiptStatus": 500,
+          "xctestIssues": [
+            "Timed out waiting for Siri to activate",
+            "Application 'com.apple.siri' has not loaded accessibility"
+          ],
+          "screen": "Siri's answer visible during and after the hold"
+        }
+      ],
+      "note": "Full pass on CLI build 8597bc5f. On the final build 4b79cd1a the fixture, operation and receipt checks passed, then a restart waited on the UI Automation passcode prompt, so lifecycle was not rerun."
+    },
+    {
+      "device": "iPhone 13 Pro",
+      "os": "iOS 18.7.8",
+      "connection": "USB, CoreDevice tunnel",
+      "binarySHA256": "4b79cd1aa74f0fbd6cc54b95905e3f7edd596b38cbd2563379df499e8f9d207c",
+      "fixture": {
+        "status": "passed",
+        "checks": 13
+      },
+      "operations": {
+        "status": "passed",
+        "checks": 40
+      },
+      "lifecycle": {
+        "status": "passed",
+        "checks": [
+          "old credential removed by stop",
+          "two concurrent starts share one endpoint",
+          "new credential mode 0600",
+          "restart issues a new epoch",
+          "previous-epoch receipt lookup returns session_mismatch"
+        ]
+      },
+      "siri": [
+        {
+          "phrase": "what time is it",
+          "acceptSeconds": 0.23,
+          "xctestCallMs": 517,
+          "receiptStatus": 200,
+          "xctestIssues": [],
+          "screen": "Siri's answer visible after the call"
+        }
+      ]
+    },
+    {
+      "device": "iPad Air 11-inch (M2)",
+      "os": "iPadOS 26.6.2",
+      "connection": "Wi-Fi, CoreDevice tunnel",
+      "binarySHA256": "4b79cd1aa74f0fbd6cc54b95905e3f7edd596b38cbd2563379df499e8f9d207c",
+      "fixture": {
+        "status": "passed",
+        "checks": 13
+      },
+      "operations": {
+        "status": "passed",
+        "checks": 40
+      },
+      "lifecycle": {
+        "status": "passed",
+        "checks": [
+          "old credential removed by stop",
+          "two concurrent starts share one endpoint",
+          "new credential mode 0600",
+          "restart issues a new epoch",
+          "previous-epoch receipt lookup returns session_mismatch"
+        ]
+      },
+      "siri": [
+        {
+          "phrase": "what time is it",
+          "acceptSeconds": 0.29,
+          "xctestCallMs": 379,
+          "receiptStatus": 200,
+          "xctestIssues": [],
+          "screen": "Siri active (screen-edge glow), answer not yet on screen"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Test devices, signed with a development team. The fixture and operation checks only touch the DeviceLoop host app.",
+    "Siri phrases were limited to requests with no side effects. The screen field comes from device screenshots.",
+    "Siri timings came from CLI build 5bb6a5ac on the iPhone 15 Pro Max and 8597bc5f on the iPhone 13 Pro, with the same runner sources as 8597bc5f.",
+    "The iPhone 17 Pro Max stayed locked and was not tested.",
+    "Concurrent starts were checked with a warm runner build cache."
+  ]
+}

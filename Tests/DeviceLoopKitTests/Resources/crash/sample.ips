@@ -1,0 +1,29 @@
+{"app_name":"Sample","timestamp":"2026-10-22 11:35:39.00 -0700","app_version":"2.3","slice_uuid":"00000000-0000-0000-0000-000000000000","build_version":"45","platform":2,"bundleID":"com.example.Sample","share_with_app_devs":0,"is_first_party":0,"bug_type":"309","os_version":"iPhone OS 27.0 (24A000)","roots_installed":0,"name":"Sample","incident_id":"11111111-2222-3333-4444-555555555555"}
+{
+  "uptime" : 1000,
+  "procRole" : "Foreground",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "iPhone18,1",
+  "osVersion" : {
+    "train" : "iPhone OS 27.0",
+    "build" : "24A000",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2026-10-22 11:35:37.1000 -0700",
+  "incident" : "11111111-2222-3333-4444-555555555555",
+  "pid" : 4321,
+  "cpuType" : "ARM-64",
+  "procLaunch" : "2026-10-22 11:35:35.2000 -0700",
+  "procName" : "Sample",
+  "procPath" : "\/private\/var\/containers\/Bundle\/Application\/00000000-0000-0000-0000-000000000000\/Sample.app\/Sample",
+  "bundleInfo" : {"CFBundleShortVersionString":"2.3","CFBundleVersion":"45","CFBundleIdentifier":"com.example.Sample"},
+  "parentProc" : "launchd",
+  "parentPid" : 1,
+  "exception" : {"codes":"0x0000000000000001, 0x0000000100004000","rawCodes":[1,4294983680],"type":"EXC_BREAKPOINT","signal":"SIGTRAP"},
+  "termination" : {"flags":0,"code":5,"namespace":"SIGNAL","indicator":"Trace\/BPT trap: 5","byProc":"exc handler","byPid":4321},
+  "faultingThread" : 0,
+  "threads" : [{"triggered":true,"id":1000,"queue":"com.apple.main-thread","frames":[{"imageOffset":16384,"imageIndex":0}]}],
+  "usedImages" : [{"source":"P","arch":"arm64","base":4294967296,"size":32768,"uuid":"00000000-0000-0000-0000-000000000000","path":"\/private\/var\/containers\/Bundle\/Application\/00000000-0000-0000-0000-000000000000\/Sample.app\/Sample","name":"Sample"}]
+}

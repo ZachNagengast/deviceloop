@@ -1,0 +1,52 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "00000000-0000-0000-0000-000000000108",
+        "deviceName" : "iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "24A434",
+        "osVersion" : "27.0",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 0,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "SuiteFixture · Built with macOS 27.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1794170733.783,
+  "passedTests" : 0,
+  "result" : "Failed",
+  "runtimeWarnings" : [
+
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1794170715.536,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertEqual failed: (\"2\") is not equal to (\"3\")",
+      "targetName" : "SuiteFixtureTests",
+      "testIdentifier" : 1,
+      "testIdentifierString" : "DeliberateFailure/testMismatch()",
+      "testIdentifierURL" : "test://com.apple.xcode/SuiteFixture/SuiteFixtureTests/DeliberateFailure/testMismatch",
+      "testName" : "testMismatch()"
+    }
+  ],
+  "title" : "Test - SuiteFixture",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 1
+}

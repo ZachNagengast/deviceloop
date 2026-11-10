@@ -1,0 +1,14 @@
+# Build
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcresult
+/dist
+__pycache__/
+
+
+# Artifacts
+*.mp4
+*.mov
+.DS_Store

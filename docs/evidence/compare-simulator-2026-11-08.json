@@ -1,0 +1,130 @@
+{
+  "schema": "deviceloop.validation-summary/1",
+  "date": "2026-11-08",
+  "device": "Disposable iPhone 15 Pro Max simulator",
+  "os": "iOS 27.0 (24A434)",
+  "xcode": "27.2 (27B52)",
+  "compare": {
+    "script": "scripts/smoke-compare.py",
+    "status": "passed",
+    "passes": 3,
+    "binarySHA256": "83dada716ffa387707eff4156def6fd1696248c4336721ee9bac04068ec934f1",
+    "statusBarMask": "0,0,430,59",
+    "steps": [
+      "launch",
+      "ui tree",
+      "screenshot",
+      "video capture --do 'tap id=fixture.transition.toggle'"
+    ],
+    "control": {
+      "verdict": "same",
+      "screenshotChangedPixels": 0,
+      "treeChanges": 0,
+      "animationMs": [
+        [
+          265,
+          265
+        ],
+        [
+          265,
+          265
+        ],
+        [
+          283.3,
+          266.7
+        ]
+      ],
+      "latencyMs": [
+        [
+          243.6,
+          250.8
+        ],
+        [
+          255.4,
+          258.1
+        ],
+        [
+          244.1,
+          248.5
+        ]
+      ],
+      "hitchJumpsMs": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "seeded": {
+      "verdict": "different",
+      "tree": {
+        "step": 2,
+        "events": [
+          3,
+          3
+        ],
+        "files": [
+          "results/3.json"
+        ],
+        "changes": [
+          "frame of fixture.text.submit delta 40,0,0,0",
+          "label of fixture.navigation.open Open detail to Show detail"
+        ]
+      },
+      "screenshot": {
+        "step": 3,
+        "events": [
+          5,
+          5
+        ],
+        "changedPercent": 0.939,
+        "boxes": [
+          "16,273.3,151,34.3",
+          "29,362.7,99,15.7"
+        ]
+      },
+      "timing": {
+        "step": 4,
+        "events": [
+          7,
+          7
+        ],
+        "files": [
+          "results/7.json",
+          "artifacts/capture-<time>.mp4",
+          "artifacts/sheet-<time>.png"
+        ],
+        "animationMs": [
+          [
+            265,
+            666.7
+          ],
+          [
+            265,
+            666.7
+          ],
+          [
+            283.3,
+            683.3
+          ]
+        ],
+        "floorMs": 50,
+        "status": "changed"
+      }
+    }
+  },
+  "fixture": {
+    "script": "scripts/smoke-runner.py",
+    "status": "passed",
+    "checks": 13
+  },
+  "limits": "One recording per variant and pass on one simulator. Timings are uncalibrated visual estimates of the simulator recording, not device timing."
+}

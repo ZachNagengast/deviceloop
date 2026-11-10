@@ -1,0 +1,9 @@
+DeviceLoop
+Copyright (c) 2026 Argmax, Inc.
+
+This product includes software developed by third parties:
+
+swift-argument-parser
+https://github.com/apple/swift-argument-parser
+Copyright (c) 2020 Apple Inc. and the Swift project authors
+Licensed under the Apache License, Version 2.0 with Runtime Library Exception

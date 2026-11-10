@@ -1,0 +1,78 @@
+# Source for DeviceLoopRunner.xcodeproj. Regenerate with `make runner-project` (needs xcodegen).
+name: DeviceLoopRunner
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+configFiles:
+  Debug: Configuration/Signing.xcconfig
+  Release: Configuration/Signing.xcconfig
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "6.0"
+    GENERATE_INFOPLIST_FILE: YES
+    TARGETED_DEVICE_FAMILY: "1,2"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+targets:
+  DeviceLoopHost:
+    type: application
+    platform: iOS
+    sources: [Host]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.host$(DEVICELOOP_DISAMBIGUATOR)
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_KEY_CFBundleDisplayName: deviceloop
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "The DeviceLoop test fixture shows the simulated location it receives."
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+  DeviceLoopRunner:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests, Shared, Intents/IntentsBridging.swift]
+    dependencies:
+      - target: DeviceLoopHost
+      - target: DeviceLoopIntents
+        embed: true
+        link: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.runner$(DEVICELOOP_DISAMBIGUATOR)
+        TEST_TARGET_NAME: DeviceLoopHost
+  DeviceLoopIntents:
+    type: framework
+    platform: iOS
+    deploymentTarget: "27.0"
+    sources: [Intents, Shared/RunnerProtocol.swift]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.intents
+        ENABLE_TESTING_SEARCH_PATHS: YES
+  DeviceLoopSiriFixture:
+    type: application
+    platform: iOS
+    sources: [SiriFixture]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.siri-fixture$(DEVICELOOP_DISAMBIGUATOR)
+        INFOPLIST_KEY_CFBundleDisplayName: deviceloop fixture
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+schemes:
+  DeviceLoopRunner:
+    build:
+      targets:
+        DeviceLoopRunner: [test]
+    test:
+      targets: [DeviceLoopRunner]
+  DeviceLoopSiriFixture:
+    build:
+      targets:
+        DeviceLoopSiriFixture: all
+    run:
+      config: Debug

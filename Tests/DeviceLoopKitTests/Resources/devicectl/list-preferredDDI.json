@@ -1,0 +1,84 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "list",
+      "preferredDDI",
+      "--platform",
+      "iOS",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.list.preferredDDI",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.32"
+  },
+  "result": {
+    "hostCoreDeviceVersion": "651.32",
+    "platforms": {
+      "iOS": [
+        {
+          "ddiMetadata": {
+            "buildUpdate": "27B52",
+            "contentIsCompatible": true,
+            "coreDeviceVersionChecksIncludeDevelopmentRevision": true,
+            "developmentRevision": 0,
+            "enforcingCoreDeviceVersionChecks": true,
+            "isUsable": true,
+            "platform": "iOS",
+            "projectMetadata": [
+              {
+                "name": "Citrine",
+                "version": "2403"
+              },
+              {
+                "name": "CoreDevice",
+                "version": "651.32"
+              },
+              {
+                "name": "DTDeveloperDiskImageSupport",
+                "version": "14.0.0"
+              },
+              {
+                "name": "DTOCMock",
+                "version": "23002"
+              },
+              {
+                "name": "GPUToolsDevice_DDI",
+                "version": "2027.0.5"
+              },
+              {
+                "name": "JetsamProperties",
+                "version": "2999"
+              },
+              {
+                "name": "LiveExecutionResultsLogger",
+                "version": "20101"
+              },
+              {
+                "name": "Mercury",
+                "version": "78"
+              },
+              {
+                "name": "Playgrounds",
+                "version": "103"
+              },
+              {
+                "name": "XCResultKitBNI",
+                "version": "25407"
+              },
+              {
+                "name": "XCTest",
+                "version": "25435"
+              }
+            ],
+            "variant": "external"
+          },
+          "hostDDI": "file:///Library/Developer/DeveloperDiskImages/iOS_DDI/"
+        }
+      ]
+    }
+  }
+}

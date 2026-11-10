@@ -1,0 +1,140 @@
+{
+  "steps": [
+    {
+      "chapter": "How it works"
+    },
+    {
+      "caption": "One CLI for simulators and devices, on devicectl, simctl and an XCUITest runner"
+    },
+    {
+      "run": "deviceloop info"
+    },
+    {
+      "run": "deviceloop runner start"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "chapter": "What you can do"
+    },
+    {
+      "caption": "Launch an app and read the screen as elements with refs"
+    },
+    {
+      "run": "deviceloop launch com.argmaxinc.deviceloop.sample --restart"
+    },
+    {
+      "run": "deviceloop ui tree --max-rows 8"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "caption": "Tap by label and check what changed"
+    },
+    {
+      "run": "deviceloop ui tap Lagoon"
+    },
+    {
+      "run": "deviceloop ui tap Favorite"
+    },
+    {
+      "run": "deviceloop ui find --id sample.palette.favorite"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "caption": "Change a setting and put it back"
+    },
+    {
+      "run": "deviceloop state scope start"
+    },
+    {
+      "run": "deviceloop appearance dark"
+    },
+    {
+      "pause": 1.5
+    },
+    {
+      "run": "deviceloop state restore"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "caption": "Type into fields, read the text back and answer alerts"
+    },
+    {
+      "run": "deviceloop ui tap Account"
+    },
+    {
+      "run": "deviceloop ui type ada@example.com --into id=sample.account.email"
+    },
+    {
+      "run": "deviceloop ui type 'correct horse' --into id=sample.account.password"
+    },
+    {
+      "run": "deviceloop ui tap 'Sign In'"
+    },
+    {
+      "run": "deviceloop ui tap 'Sign Out'"
+    },
+    {
+      "run": "deviceloop ui alert"
+    },
+    {
+      "run": "deviceloop ui alert --button 'Sign Out'"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "caption": "Run XCTest's accessibility audit on the screen"
+    },
+    {
+      "run": "deviceloop ui tap 'Accessibility issues'"
+    },
+    {
+      "run": "deviceloop ui audit"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "caption": "Find animation gaps in a screen recording"
+    },
+    {
+      "run": "deviceloop open 'deviceloop-sample://move?driver=frames&stall=150'"
+    },
+    {
+      "pause": 1.5
+    },
+    {
+      "run": "deviceloop video inspect .build/demo/assets/sample-stall.mp4 --no-sheet"
+    },
+    {
+      "pause": 1
+    },
+    {
+      "chapter": "What your agent can do"
+    },
+    {
+      "caption": "Claude Code drives the same tools through the DeviceLoop MCP server"
+    },
+    {
+      "run": "claude -p \"Open Accessibility in Settings on the iPhone 17 Pro simulator and tell me in one sentence if Reduce Motion is on.\"",
+      "exec": [
+        "python3",
+        "scripts/demo/agent.py",
+        "--binary",
+        "{binary}",
+        "Open Accessibility in Settings on the iPhone 17 Pro simulator and tell me in one sentence if Reduce Motion is on."
+      ]
+    },
+    {
+      "pause": 2
+    }
+  ]
+}

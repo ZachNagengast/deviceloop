@@ -1,0 +1,303 @@
+{
+  "schema": "deviceloop.validation-summary/1",
+  "date": "2026-10-22",
+  "device": "Disposable iPhone 15 Pro Max simulator",
+  "os": "iOS 27.0 (24A434)",
+  "xcode": "27.1 (27A9275)",
+  "protocolRevision": 3,
+  "fixture": {
+    "status": "passed",
+    "binarySHA256": "4b79cd1aa74f0fbd6cc54b95905e3f7edd596b38cbd2563379df499e8f9d207c",
+    "checks": [
+      {
+        "name": "initial counter",
+        "id": "fixture.counter.value",
+        "expected": "Count: 0",
+        "observed": "Count: 0",
+        "passed": true
+      },
+      {
+        "name": "initial text",
+        "id": "fixture.text.echo",
+        "expected": "No text submitted",
+        "observed": "No text submitted",
+        "passed": true
+      },
+      {
+        "name": "initial choice",
+        "id": "fixture.duplicate.result",
+        "expected": "Choice: none",
+        "observed": "Choice: none",
+        "passed": true
+      },
+      {
+        "name": "one increment, no stale replay",
+        "id": "fixture.counter.value",
+        "expected": "Count: 1",
+        "observed": "Count: 1",
+        "passed": true
+      },
+      {
+        "name": "observation replacement rejects old refs",
+        "id": "fixture.counter.value",
+        "expected": "Count: 1",
+        "observed": "Count: 1",
+        "passed": true
+      },
+      {
+        "name": "exact submitted text",
+        "id": "fixture.text.echo",
+        "expected": "deviceloop fixture 42",
+        "observed": "deviceloop fixture 42",
+        "passed": true
+      },
+      {
+        "name": "second duplicate by identifier",
+        "id": "fixture.duplicate.result",
+        "expected": "Choice: second",
+        "observed": "Choice: second",
+        "passed": true
+      },
+      {
+        "name": "first duplicate by identifier",
+        "id": "fixture.duplicate.result",
+        "expected": "Choice: first",
+        "observed": "Choice: first",
+        "passed": true
+      },
+      {
+        "name": "navigation arrived",
+        "id": "fixture.navigation.detail",
+        "expected": "Detail screen",
+        "observed": "Detail screen",
+        "passed": true
+      },
+      {
+        "name": "navigation returned with state intact",
+        "id": "fixture.counter.value",
+        "expected": "Count: 1",
+        "observed": "Count: 1",
+        "passed": true
+      },
+      {
+        "name": "restart resets counter",
+        "id": "fixture.counter.value",
+        "expected": "Count: 0",
+        "observed": "Count: 0",
+        "passed": true
+      },
+      {
+        "name": "restart resets text",
+        "id": "fixture.text.echo",
+        "expected": "No text submitted",
+        "observed": "No text submitted",
+        "passed": true
+      },
+      {
+        "name": "restart resets choice",
+        "id": "fixture.duplicate.result",
+        "expected": "Choice: none",
+        "observed": "Choice: none",
+        "passed": true
+      }
+    ],
+    "cleanup": "home_request_completed"
+  },
+  "operations": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "health succeeds",
+        "passed": true
+      },
+      {
+        "name": "health advertises a UUID epoch",
+        "passed": true
+      },
+      {
+        "name": "runner starts idle",
+        "passed": true
+      },
+      {
+        "name": "baseline tree succeeds",
+        "passed": true
+      },
+      {
+        "name": "baseline has one fixture counter",
+        "passed": true
+      },
+      {
+        "name": "baseline counter is readable",
+        "passed": true
+      },
+      {
+        "name": "first increment acknowledged",
+        "passed": true
+      },
+      {
+        "name": "duplicate completed request returns exact cached response",
+        "passed": true
+      },
+      {
+        "name": "after duplicate tree succeeds",
+        "passed": true
+      },
+      {
+        "name": "after duplicate has one fixture counter",
+        "passed": true
+      },
+      {
+        "name": "after duplicate counter is readable",
+        "passed": true
+      },
+      {
+        "name": "same UUID increments counter exactly once",
+        "passed": true
+      },
+      {
+        "name": "same ID with different bytes conflicts",
+        "passed": true
+      },
+      {
+        "name": "missing epoch rejects input",
+        "passed": true
+      },
+      {
+        "name": "wrong epoch rejects input",
+        "passed": true
+      },
+      {
+        "name": "zero dispatch budget rejects input",
+        "passed": true
+      },
+      {
+        "name": "after rejected input tree succeeds",
+        "passed": true
+      },
+      {
+        "name": "after rejected input has one fixture counter",
+        "passed": true
+      },
+      {
+        "name": "after rejected input counter is readable",
+        "passed": true
+      },
+      {
+        "name": "conflict, epoch and budget rejection leave counter unchanged",
+        "passed": true
+      },
+      {
+        "name": "admission health stays responsive",
+        "passed": true
+      },
+      {
+        "name": "wait occupies admission before competing requests",
+        "passed": true
+      },
+      {
+        "name": "competing increment is rejected without queuing",
+        "passed": true
+      },
+      {
+        "name": "duplicate active ID does not rerun",
+        "passed": true
+      },
+      {
+        "name": "receipt lookup responds during wait",
+        "passed": true
+      },
+      {
+        "name": "receipt reports running operation",
+        "passed": true
+      },
+      {
+        "name": "health responds during wait",
+        "passed": true
+      },
+      {
+        "name": "health reports active operation and zero queue",
+        "passed": true
+      },
+      {
+        "name": "missing-selector wait completes with timeout",
+        "passed": true
+      },
+      {
+        "name": "terminal receipt is available",
+        "passed": true
+      },
+      {
+        "name": "terminal receipt preserves the failed wait response",
+        "passed": true
+      },
+      {
+        "name": "completed wait replays exact response without waiting again",
+        "passed": true
+      },
+      {
+        "name": "final tree succeeds",
+        "passed": true
+      },
+      {
+        "name": "final has one fixture counter",
+        "passed": true
+      },
+      {
+        "name": "final counter is readable",
+        "passed": true
+      },
+      {
+        "name": "busy rejection did not increment the counter",
+        "passed": true
+      },
+      {
+        "name": "unknown receipt remains unknown and is never replayed",
+        "passed": true
+      },
+      {
+        "name": "malformed Siri request is rejected before acceptance",
+        "passed": true
+      },
+      {
+        "name": "screenshot exceeds receipt storage",
+        "passed": true
+      },
+      {
+        "name": "oversized result replays as not retained",
+        "passed": true
+      }
+    ]
+  },
+  "lifecycle": {
+    "status": "passed",
+    "binarySHA256": "4b79cd1aa74f0fbd6cc54b95905e3f7edd596b38cbd2563379df499e8f9d207c",
+    "checks": [
+      {
+        "name": "old credential removed by stop",
+        "passed": true
+      },
+      {
+        "name": "two concurrent starts share one endpoint",
+        "passed": true
+      },
+      {
+        "name": "new credential mode 0600",
+        "passed": true
+      },
+      {
+        "name": "restart issues a new epoch",
+        "passed": true
+      },
+      {
+        "name": "previous-epoch receipt lookup returns session_mismatch",
+        "passed": true
+      }
+    ]
+  },
+  "limits": [
+    "Simulator evidence does not establish physical-device behavior.",
+    "Live Siri execution was not exercised.",
+    "Receipts are volatile and bounded, not durable exactly-once guarantees.",
+    "Concurrent starts were checked with a warm runner build cache."
+  ]
+}

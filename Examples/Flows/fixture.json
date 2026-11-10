@@ -1,0 +1,39 @@
+{
+  "schema": "deviceloop.flow/1",
+  "name": "fixture",
+  "app": {
+    "bundleID": "com.argmaxinc.deviceloop.host",
+    "arguments": ["--deviceloop-fixture"]
+  },
+  "reset": "relaunch",
+  "timeoutMs": 300000,
+  "setup": [
+    {"assert": {"element": {"id": "fixture.counter.increment"}, "is": "hittable"}}
+  ],
+  "steps": [
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 0"}},
+    {"assert": {"element": {"id": "fixture.text.echo"}, "label": "No text submitted"}},
+    {"assert": {"element": {"id": "fixture.duplicate.result"}, "label": "Choice: none"}},
+    {"tap": {"id": "fixture.counter.increment"}},
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 1"}},
+    {"type": {"text": "deviceloop fixture 42", "into": {"id": "fixture.text.input"}}},
+    {"tap": {"id": "fixture.text.submit"}},
+    {"assert": {"element": {"id": "fixture.text.echo"}, "label": "deviceloop fixture 42"}},
+    {"tap": {"id": "fixture.duplicate.second"}},
+    {"assert": {"element": {"id": "fixture.duplicate.result"}, "label": "Choice: second"}},
+    {"tap": {"id": "fixture.duplicate.first"}},
+    {"assert": {"element": {"id": "fixture.duplicate.result"}, "label": "Choice: first"}},
+    {"tap": {"id": "fixture.navigation.open"}},
+    {"assert": {"element": {"id": "fixture.navigation.detail"}, "label": "Detail screen"}},
+    {"tap": {"id": "fixture.navigation.back"}},
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 1"}},
+    {"launch": {}},
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 0"}},
+    {"assert": {"element": {"id": "fixture.text.echo"}, "label": "No text submitted"}},
+    {"assert": {"element": {"id": "fixture.duplicate.result"}, "label": "Choice: none"}},
+    {"screenshot": {"name": "fixture-final"}}
+  ],
+  "cleanup": [
+    {"press": {"button": "home"}}
+  ]
+}

@@ -1,0 +1,6 @@
+//  For licensing see accompanying LICENSE file.
+//  Copyright 2026 Argmax, Inc. All rights reserved.
+
+// Makes the bundle identifier unique to the development team you pick in Signing & Capabilities, the same
+// way Apple's sample code projects do.
+SAMPLE_CODE_DISAMBIGUATOR = ${DEVELOPMENT_TEAM}

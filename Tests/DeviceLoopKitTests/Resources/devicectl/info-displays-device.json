@@ -1,0 +1,61 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "device",
+      "info",
+      "displays",
+      "-d",
+      "00000000-0000-0000-0000-000000000000",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.device.info.displays",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.13.5"
+  },
+  "result": {
+    "backlightState": "activeOn",
+    "displays": [
+      {
+        "backlightState": "unknown",
+        "bounds": [
+          [
+            0,
+            0
+          ],
+          [
+            1170,
+            2532
+          ]
+        ],
+        "chromeIdentifier": "com.apple.dt.devicekit.chrome.phone4",
+        "currentOrientation": "rot0",
+        "displayId": 1,
+        "framebufferMaskIdentifier": "00000000-0000-0000-0000-0000000000b1",
+        "name": "LCD",
+        "nativeOrientation": "rot0",
+        "nativeSize": [
+          1170,
+          2532
+        ],
+        "physicalSize": [
+          2.54347825050354,
+          5.504347801208496
+        ],
+        "pointScale": 3,
+        "primary": true,
+        "type": {
+          "integrated": {}
+        }
+      }
+    ],
+    "orientation": {
+      "currentDeviceNonFlatOrientation": "portrait",
+      "currentDeviceOrientation": "portrait",
+      "currentDeviceOrientationLocked": false
+    }
+  }
+}

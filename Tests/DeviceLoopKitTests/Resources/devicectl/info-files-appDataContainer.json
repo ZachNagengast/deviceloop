@@ -1,0 +1,545 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "device",
+      "info",
+      "files",
+      "--device",
+      "00000000-0000000000000000",
+      "--domain-type",
+      "appDataContainer",
+      "--domain-identifier",
+      "com.argmaxinc.deviceloop.host",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.device.info.files",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.32"
+  },
+  "result": {
+    "deviceIdentifier": "00000000-0000-0000-0000-000000000000",
+    "domain": "appDataContainer",
+    "domainIdentifier": "com.argmaxinc.deviceloop.host",
+    "files": [
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:40.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 64
+        },
+        "name": "Documents",
+        "relativePath": "Documents",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:42:41.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 224
+        },
+        "name": "Library",
+        "relativePath": "Library",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:42.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/Caches",
+        "relativePath": "Library/Caches",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:25.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/Caches/com.apple.dyld",
+        "relativePath": "Library/Caches/com.apple.dyld",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:25.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 256,
+          "size": 8208
+        },
+        "name": "Library/Caches/com.apple.dyld/DeviceLoopHost.dyld4",
+        "relativePath": "Library/Caches/com.apple.dyld/DeviceLoopHost.dyld4",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:42:41.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/LanguageModeling",
+        "relativePath": "Library/LanguageModeling",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "com.apple.metadata:com_apple_backup_excludeItem": "com.apple.MobileBackup"
+          },
+          "lastModDate": "2026-11-08T23:42:41.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/LanguageModeling/en-dynamic.lm",
+        "relativePath": "Library/LanguageModeling/en-dynamic.lm",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:42:41.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 1429
+        },
+        "name": "Library/LanguageModeling/en-dynamic.lm/Info.plist",
+        "relativePath": "Library/LanguageModeling/en-dynamic.lm/Info.plist",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:40.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 64
+        },
+        "name": "Library/Preferences",
+        "relativePath": "Library/Preferences",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:40.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/Saved Application State",
+        "relativePath": "Library/Saved Application State",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 128
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 128
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 1576
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/data.data",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/data.data",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 856
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/userInfo.data",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/userInfo.data",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:41.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/KnownSceneSessions",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/KnownSceneSessions",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 1031
+        },
+        "name": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/KnownSceneSessions/data.data",
+        "relativePath": "Library/Saved Application State/com.argmaxinc.deviceloop.host.savedState/KnownSceneSessions/data.data",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:40.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/SplashBoard",
+        "relativePath": "Library/SplashBoard",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:39:19.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 128
+        },
+        "name": "Library/SplashBoard/Snapshots",
+        "relativePath": "Library/SplashBoard/Snapshots",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:23.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 192
+        },
+        "name": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}",
+        "relativePath": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:23.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 2172
+        },
+        "name": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/02C5BC6A-6AF9-46C7-BADA-4D0B6560F0ED@3x.ktx",
+        "relativePath": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/02C5BC6A-6AF9-46C7-BADA-4D0B6560F0ED@3x.ktx",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:23.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 2196
+        },
+        "name": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/5CBE156B-ADCC-4D20-8B16-038033AA5DC2@3x.ktx",
+        "relativePath": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/5CBE156B-ADCC-4D20-8B16-038033AA5DC2@3x.ktx",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:23.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 2196
+        },
+        "name": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/C9C1A9D9-FE36-4501-973E-E964A088CFEC@3x.ktx",
+        "relativePath": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/C9C1A9D9-FE36-4501-973E-E964A088CFEC@3x.ktx",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T23:41:23.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 420,
+          "size": 2172
+        },
+        "name": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/DB383868-4829-4EA3-8B82-1D7ED97A977F@3x.ktx",
+        "relativePath": "Library/SplashBoard/Snapshots/com.argmaxinc.deviceloop.host - {DEFAULT GROUP}/DB383868-4829-4EA3-8B82-1D7ED97A977F@3x.ktx",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:06:47.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 96
+        },
+        "name": "Library/SplashBoard/Snapshots/sceneID:com.argmaxinc.deviceloop.host-F46478DB-FE9B-47EB-AB69-7C1B5A081BDA",
+        "relativePath": "Library/SplashBoard/Snapshots/sceneID:com.argmaxinc.deviceloop.host-F46478DB-FE9B-47EB-AB69-7C1B5A081BDA",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:06:47.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 64
+        },
+        "name": "Library/SplashBoard/Snapshots/sceneID:com.argmaxinc.deviceloop.host-F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/downscaled",
+        "relativePath": "Library/SplashBoard/Snapshots/sceneID:com.argmaxinc.deviceloop.host-F46478DB-FE9B-47EB-AB69-7C1B5A081BDA/downscaled",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-08T20:38:40.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 64
+        },
+        "name": "SystemData",
+        "relativePath": "SystemData",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-11-09T00:07:35.000Z",
+          "ownerGid": 501,
+          "ownerUid": 501,
+          "permissions": 493,
+          "size": 64
+        },
+        "name": "tmp",
+        "relativePath": "tmp",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      }
+    ]
+  }
+}

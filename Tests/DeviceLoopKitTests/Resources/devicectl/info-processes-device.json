@@ -1,0 +1,51 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "device",
+      "info",
+      "processes",
+      "-d",
+      "00000000-0000-0000-0000-000000000000",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.device.info.processes",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.13.5"
+  },
+  "result": {
+    "deviceIdentifier": "00000000-0000-0000-0000-000000000000",
+    "runningProcesses": [
+      {
+        "executable": "file:///sbin/launchd",
+        "processIdentifier": 1
+      },
+      {
+        "executable": "file:///System/Library/CoreServices/SpringBoard.app/SpringBoard",
+        "processIdentifier": 34
+      },
+      {
+        "executable": "file:///Applications/Preferences.app/Preferences",
+        "processIdentifier": 731
+      },
+      {
+        "executable": "file:///private/var/containers/Bundle/Application/11111111-1111-1111-1111-111111111111/Sample.app/Sample",
+        "processIdentifier": 2101
+      },
+      {
+        "executable": "file:///private/var/containers/Bundle/Application/11111111-1111-1111-1111-111111111111/Sample.app/PlugIns/SampleWidget.appex/SampleWidget",
+        "processIdentifier": 2102
+      },
+      {
+        "executable": "file:///private/var/containers/Bundle/Application/33333333-3333-3333-3333-333333333333/MobileSafari.app/Extensions/SafariLinkExtension.appex/SafariLinkExtension",
+        "processIdentifier": 2200
+      },
+      {
+        "processIdentifier": 2300
+      }
+    ]
+  }
+}

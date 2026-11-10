@@ -1,0 +1,25 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "device",
+      "orientation",
+      "get",
+      "-d",
+      "00000000-0000-0000-0000-000000000000",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.device.orientation.get",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.32"
+  },
+  "result": {
+    "deviceIdentifier": "00000000-0000-0000-0000-000000000000",
+    "deviceIsOrientationLocked": false,
+    "deviceOrientation": "unknown",
+    "deviceOrientationNonFlat": "portrait"
+  }
+}

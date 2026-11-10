@@ -1,0 +1,7 @@
+//  For licensing see accompanying LICENSE file.
+//  Copyright 2026 Argmax, Inc. All rights reserved.
+
+// Appends the signing team to the runner's bundle identifiers, the way Apple's sample code projects use
+// SAMPLE_CODE_DISAMBIGUATOR, so every team signs identifiers of its own. Simulator builds have no team and
+// use the base identifiers.
+DEVICELOOP_DISAMBIGUATOR = ${DEVELOPMENT_TEAM}

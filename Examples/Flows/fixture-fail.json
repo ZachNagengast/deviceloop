@@ -1,0 +1,19 @@
+{
+  "schema": "deviceloop.flow/1",
+  "name": "fixture-fail",
+  "app": {
+    "bundleID": "com.argmaxinc.deviceloop.host",
+    "arguments": ["--deviceloop-fixture"]
+  },
+  "reset": "relaunch",
+  "timeoutMs": 60000,
+  "steps": [
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 0"}},
+    {"tap": {"id": "fixture.counter.increment"}},
+    {"assert": {"element": {"id": "fixture.counter.value"}, "label": "Count: 2", "timeoutMs": 3000}},
+    {"tap": {"id": "fixture.counter.increment"}}
+  ],
+  "cleanup": [
+    {"press": {"button": "home"}}
+  ]
+}

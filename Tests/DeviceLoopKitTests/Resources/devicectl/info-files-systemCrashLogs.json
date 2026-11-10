@@ -1,0 +1,156 @@
+{
+  "info": {
+    "arguments": [
+      "devicectl",
+      "device",
+      "info",
+      "files",
+      "-d",
+      "00000000-0000-0000-0000-000000000000",
+      "--domain-type",
+      "systemCrashLogs",
+      "--json-output",
+      "out.json"
+    ],
+    "commandType": "devicectl.device.info.files",
+    "environment": {},
+    "jsonVersion": 5,
+    "outcome": "success",
+    "version": "651.13.5"
+  },
+  "result": {
+    "deviceIdentifier": "00000000-0000-0000-0000-000000000000",
+    "domain": "systemCrashLogs",
+    "files": [
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "LogType": "309",
+            "bug_type": "309"
+          },
+          "lastModDate": "2026-10-21T06:10:01.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 44210
+        },
+        "name": "Sample-2026-10-20-231001.ips",
+        "relativePath": "Sample-2026-10-20-231001.ips",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "LogType": "202",
+            "bug_type": "202"
+          },
+          "lastModDate": "2026-10-18T19:00:00.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 70683
+        },
+        "name": "Sample.cpu_resource-2026-10-18-120000.ips",
+        "relativePath": "Sample.cpu_resource-2026-10-18-120000.ips",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "LogType": "309",
+            "bug_type": "309"
+          },
+          "lastModDate": "2026-10-01T15:00:00.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 39001
+        },
+        "name": "Sample-2026-10-01-080000.ips",
+        "relativePath": "Retired/Sample-2026-10-01-080000.ips",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "LogType": "288",
+            "bug_type": "288"
+          },
+          "lastModDate": "2026-10-19T17:15:00.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 120000
+        },
+        "name": "stacks+backboardd-2026-10-19-101500.ips",
+        "relativePath": "stacks+backboardd-2026-10-19-101500.ips",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {},
+          "lastModDate": "2026-10-21T06:10:01.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 0
+        },
+        "name": "Retired",
+        "relativePath": "Retired",
+        "resources": {
+          "isDirectory": true,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      },
+      {
+        "metadata": {
+          "extendedAttributes": {
+            "LogType": "298",
+            "bug_type": "298"
+          },
+          "lastModDate": "2026-10-17T16:00:00.000Z",
+          "ownerGid": 250,
+          "ownerUid": 0,
+          "permissions": 432,
+          "size": 9000
+        },
+        "name": "JetsamEvent-2026-10-17-090000.synced",
+        "relativePath": "JetsamEvent-2026-10-17-090000.synced",
+        "resources": {
+          "isDirectory": false,
+          "isHidden": false,
+          "isReadable": true,
+          "isSymbolicLink": false,
+          "isWritable": true
+        }
+      }
+    ]
+  }
+}

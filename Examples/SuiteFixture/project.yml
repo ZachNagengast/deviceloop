@@ -1,0 +1,53 @@
+# Source for SuiteFixture.xcodeproj. Regenerate with `xcodegen generate` in this directory.
+name: SuiteFixture
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+configFiles:
+  Debug: Configuration/SampleCode.xcconfig
+  Release: Configuration/SampleCode.xcconfig
+settings:
+  base:
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "6.0"
+    GENERATE_INFOPLIST_FILE: YES
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  SuiteFixture:
+    type: application
+    platform: iOS
+    sources: [SuiteFixture]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.suitefixture$(SAMPLE_CODE_DISAMBIGUATOR)
+        INFOPLIST_KEY_CFBundleDisplayName: SuiteFixture
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+  SuiteFixtureTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [SuiteFixtureTests]
+    dependencies:
+      - target: SuiteFixture
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.suitefixture.tests$(SAMPLE_CODE_DISAMBIGUATOR)
+  SuiteFixtureUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [SuiteFixtureUITests]
+    dependencies:
+      - target: SuiteFixture
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argmaxinc.deviceloop.suitefixture.uitests$(SAMPLE_CODE_DISAMBIGUATOR)
+        TEST_TARGET_NAME: SuiteFixture
+schemes:
+  SuiteFixture:
+    build:
+      targets:
+        SuiteFixture: all
+    test:
+      targets: [SuiteFixtureTests, SuiteFixtureUITests]

@@ -1,0 +1,6 @@
+Current Status Bar Overrides:
+=============================
+Time: 9:41
+DataNetworkType: 1
+WiFi Mode: 3, WiFi Bars: 2
+Battery State: 2, Battery Level: 80, Not Charging: 0

@@ -1,0 +1,26 @@
+{
+  "actionTitle" : "Build \"SuiteFixture\"",
+  "analyzerWarningCount" : 0,
+  "analyzerWarnings" : [
+
+  ],
+  "destination" : {
+    "architecture" : "undefined_arch",
+    "deviceId" : "dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder",
+    "deviceName" : "Any iOS Simulator Device",
+    "modelName" : "GenericiOS SimulatorSimulator",
+    "osVersion" : "",
+    "platform" : "iOS Simulator"
+  },
+  "endTime" : 1794170862.666,
+  "errorCount" : 0,
+  "errors" : [
+
+  ],
+  "startTime" : 1794170856.653,
+  "status" : "succeeded",
+  "warningCount" : 0,
+  "warnings" : [
+
+  ]
+}

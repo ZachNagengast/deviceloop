@@ -1,0 +1,140 @@
+{
+  "action": {
+    "ackAt": 1.07,
+    "sentAt": 0.814,
+    "status": "ran",
+    "step": "open deviceloop-sample://move?driver=frames&stall=100",
+    "windowMs": 256.0
+  },
+  "cadence": {
+    "detectionFloorMs": 16.7,
+    "fps": 60,
+    "fpsSource": "assumed",
+    "intervalHistogramMs": {
+      "116.7": 1,
+      "16.7": 153,
+      "33.3": 3,
+      "50.0": 1
+    },
+    "medianIntervalMs": 16.7,
+    "slotMs": 16.7
+  },
+  "candidates": {
+    "count": 1,
+    "items": [
+      {
+        "at": 1.533,
+        "catchUpRatio": 6,
+        "confidence": "high",
+        "durationMs": 100,
+        "kind": "jump",
+        "missedSlots": 6,
+        "repeatedFrames": 5
+      }
+    ],
+    "jumps": 1,
+    "recorderGaps": 0,
+    "recorderGapsAt": [],
+    "totalMs": 100,
+    "visualMsPerMotionSec": 122.4
+  },
+  "recording": {
+    "backend": "usb",
+    "codec": "avc1",
+    "containerDurationSec": 2.833,
+    "frames": 159,
+    "height": 2796,
+    "identicalFrames": 114,
+    "lastFrameAt": 2.817,
+    "recorderDrops": 4,
+    "wallDurationSec": 2.834,
+    "width": 1290
+  },
+  "response": {
+    "animationMs": 816.7,
+    "firstChangeAt": 1.083,
+    "lastChangeAt": 1.9,
+    "lastChangeMs": 1085.5,
+    "latencyMs": 268.9,
+    "observationWindowMs": 300,
+    "unchangedAtEnd": true
+  },
+  "schema": "deviceloop.animation/2",
+  "segments": [
+    {
+      "durationMs": 816.7,
+      "end": 1.9,
+      "energy": [
+        0.01,
+        0.09,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.17,
+        0.08
+      ],
+      "frames": 44,
+      "medianIntervalMs": 16.7,
+      "peakAt": 1.533,
+      "region": [
+        193,
+        390,
+        710,
+        2146
+      ],
+      "start": 1.083
+    }
+  ],
+  "thresholds": {
+    "masks": [],
+    "mergeGapMs": 250,
+    "observationWindowMs": 300,
+    "pixelDelta": 12,
+    "tileFraction": 0.08,
+    "tileMAD": 3
+  },
+  "warnings": []
+}

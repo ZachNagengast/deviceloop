@@ -187,8 +187,8 @@ Some CLI commands exit nonzero without an error: `ui audit` exits 7 when issues 
 
 | Code | What to do |
 |---|---|
-| `bad_arguments` | Correct the argument the message or Fix line names. |
-| `device_not_found` | Call `device_list` and pass a name or UDID from it. |
+| `bad_arguments` | Correct the argument the message or Fix line names. From the CLI it also means a mistyped command or option, a missing argument or a bad value. The Fix line names the closest command or option for a typo, and `Detail:` has the usage. |
+| `device_not_found` | Call `device_list` with `all: true` and pass a name or UDID from it. |
 | `device_ambiguous` | Pass `device` with one of the listed candidates. From a device recording it means two USB capture sources share the device name. Ask the person to rename or disconnect one. |
 | `unsupported_on_target` | The target lacks the feature. Use a `Try:` alternative or another target. |
 | `app_not_installed` | Check the bundle ID with `app_list`, or install the app. |

@@ -2,7 +2,7 @@
 
 DeviceLoop is a command line tool and MCP server that drives iPhones, iPads and simulators with the same commands, the way `simctl` drives a simulator. It runs Apple's developer tools on your Mac: `xcrun devicectl`, `xcrun simctl`, an XCUITest runner signed with your team, and AVFoundation for screen video over USB. Commands print compact text, or JSON with `--json`, and agents get the same commands as MCP tools.
 
-https://github.com/user-attachments/assets/36c1917a-621a-4a80-80c9-b7125dcc1d9a
+https://github.com/user-attachments/assets/0a291a4e-6d95-4175-895f-91ce700f9796
 
 ## Install
 
@@ -21,13 +21,19 @@ Put `~/.local/bin` on `PATH`, or link into another folder on it. Keep the checko
 
 ## Quick start
 
+Pick a simulator from `deviceloop devices --all`, boot it and make it the default target:
+
 ```bash
-deviceloop doctor
-deviceloop launch com.apple.Preferences --device booted
-deviceloop ui tree --device booted
-deviceloop ui tap General --device booted
-deviceloop screenshot --device booted
+deviceloop devices --all
+xcrun simctl bootstatus <udid> -b
+export DEVICELOOP_DEVICE=<udid>
+deviceloop screenshot
+deviceloop launch com.apple.Preferences
+deviceloop ui tree
+deviceloop ui tap General
 ```
+
+`bootstatus -b` boots the simulator if it is shut down and waits until it is ready. Without `DEVICELOOP_DEVICE` or `--device`, a command fails with `device_ambiguous` when more than one target is ready, such as two booted simulators or a simulator and a connected phone. The first `ui` command builds and starts the UI runner, which can take a minute.
 
 [Examples/Sample](Examples/Sample) is a small app to try the commands on.
 
@@ -41,7 +47,7 @@ claude mcp add -s user deviceloop -- ~/.local/bin/deviceloop mcp
 
 ## Docs
 
-- [Reference](docs/reference.md): device setup, every command and MCP tool, animation analysis, limits on real devices and the files DeviceLoop writes.
+- [Reference](docs/reference.md): device setup, every command and MCP tool, animation analysis, limits on real devices, the files DeviceLoop writes, upgrading and uninstalling.
 - [docs](docs/README.md): architecture, `simctl` parity, Siri, device state and how DeviceLoop is tested.
 - [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 

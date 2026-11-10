@@ -7,7 +7,6 @@ xcuserdata/
 /dist
 __pycache__/
 
-
 # Artifacts
 *.mp4
 *.mov

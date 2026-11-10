@@ -8,6 +8,8 @@ Report vulnerabilities privately through [GitHub private vulnerability reporting
 
 DeviceLoop runs as your macOS user and drives your own devices and simulators through Xcode's tools. Any process that runs as your user can read what DeviceLoop stores.
 
+Other accounts on the Mac can read the command line of your processes with `ps`. Launch environment variables from `launch --env`, `logs start --env` and the `env` argument of the MCP `app_launch` and `app_logs` tools go on the `devicectl` command line, so they can be read while devicectl runs: a few seconds for `launch`, and until the app exits for `launch --console` and `logs start`. Pass secrets to the app another way, for example in a file you copy into its container with `container push`.
+
 Some commands leave work running after they return: the UI runner until `deviceloop runner stop`, a `video start` recording until `video stop`, and a `logs start` capture until `logs stop`. The runner's host app disables the idle timer, so the device does not auto-lock while that app is in front.
 
 ## What DeviceLoop stores

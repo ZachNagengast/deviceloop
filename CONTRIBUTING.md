@@ -46,7 +46,7 @@ Set `DEVICELOOP_HOME` to keep runner builds, sessions, runs and artifacts out of
 export DEVICELOOP_HOME="$PWD/.build/deviceloop-home"
 ```
 
-Suites named `*LiveTests` (`ParityLiveTests`, `DeviceStateLiveTests`, `DoctorLiveTests` and `FlowLiveTests`) run against a booted simulator, and only when `DEVICELOOP_TEST_SIMULATOR` names it:
+Suites named `*LiveTests` (`ParityLiveTests`, `DeviceStateLiveTests`, `DoctorLiveTests` and `FlowLiveTests`) run against a booted simulator, one suite at a time, and only when `DEVICELOOP_TEST_SIMULATOR` names it. `FlowLiveTests` needs the runner's host app, so run `deviceloop runner start --device <udid>` once before filtering to it:
 
 ```bash
 DEVICELOOP_TEST_SIMULATOR=<udid> xcrun swift test --filter FlowLiveTests

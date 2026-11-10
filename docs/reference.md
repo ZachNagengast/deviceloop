@@ -1,6 +1,6 @@
 # DeviceLoop reference
 
-Everything the [README](../README.md) leaves out: device setup, every command and MCP tool, animation analysis, limits on real devices, doctor's checks and the files DeviceLoop writes.
+Everything the [README](../README.md) leaves out: device setup, every command and MCP tool, animation analysis, limits on real devices, doctor's checks, the files DeviceLoop writes, upgrading and uninstalling.
 
 - [Requirements and device setup](#requirements-and-device-setup)
 - [Quick start](#quick-start)
@@ -10,10 +10,11 @@ Everything the [README](../README.md) leaves out: device setup, every command an
 - [Limits on real devices](#limits-on-real-devices)
 - [Troubleshooting with doctor](#troubleshooting-with-doctor)
 - [Privacy and data on disk](#privacy-and-data-on-disk)
+- [Upgrade and uninstall](#upgrade-and-uninstall)
 
 ## Requirements and device setup
 
-A simulator needs no setup. Boot it first, for example with `xcrun simctl boot <udid>`.
+A simulator needs no setup. Boot it first, for example with `xcrun simctl bootstatus <udid> -b`.
 
 A device needs:
 
@@ -30,7 +31,7 @@ The first UI command on a device builds and launches the runner, and the device 
 
 - `pair`, `developerMode` and `unlock` are owner steps. DeviceLoop prints what to do on the device and waits up to `--wait` seconds for each (default 300). `--pair` also sends `xcrun devicectl manage pair` to a device that is not paired, once per run. After Don't Trust, reconnect the cable and run prepare again.
 - `mountDDI` mounts the developer disk image, `signingTeam` stores the team as `setup` does, and `uiAutomation` starts the runner. When nobody enters the passcode in time, prepare starts the runner again until `--wait-for-owner` seconds have passed (default 180).
-- `--all` prepares every device and booted simulator at the same time, so one visit answers every device. `--dry-run` runs doctor's read-only checks, prints the plan and changes nothing.
+- Without `--all`, prepare acts on one target: the one `--device` or `DEVICELOOP_DEVICE` names, or the only ready one. `--all` prepares every device and booted simulator at the same time, so one visit answers every device. `--dry-run` runs doctor's read-only checks, prints the plan and changes nothing.
 - prepare exits 1 when a target is not ready. It does not unpair, clean disk images, reset settings, change a passcode or boot a simulator.
 - When devicectl cannot read the lock state, for example over the network, prepare plans no unlock step. Unlock the device before the runner step starts.
 - While prepare restarts the runner after a passcode timeout, other commands on that device wait for it, and `runner status` fails with `device_busy` after 120 s.
@@ -40,18 +41,21 @@ Use a test device when you can. A phone that is also someone's daily phone has t
 ## Quick start
 
 ```bash
-deviceloop doctor
-deviceloop devices
-deviceloop screenshot --device booted
-deviceloop launch com.apple.Preferences --device booted
-deviceloop ui tree --device booted
-deviceloop ui tap General --device booted
-deviceloop video capture --do 'tap General' --device booted
+deviceloop devices --all
+xcrun simctl bootstatus <udid> -b
+export DEVICELOOP_DEVICE=<udid>
+deviceloop screenshot
+deviceloop launch com.apple.Preferences
+deviceloop ui tree
+deviceloop ui tap General
+deviceloop video capture --do 'tap About'
 ```
 
-`doctor` checks Xcode, signing and every target. `screenshot` saves a full-resolution PNG and prints its path. `ui tree` lists the elements on screen with a ref on each. `video capture` records around one step and reports how the screen moved. Files go to `~/Library/Caches/deviceloop/artifacts`, or to `$DEVICELOOP_HOME/artifacts` when `DEVICELOOP_HOME` is set. While a [run](#runs-and-comparisons) records on the target, they go to that run's `artifacts/` folder.
+`devices --all` lists every device and simulator with its UDID, ready ones first. `xcrun simctl bootstatus <udid> -b` boots the simulator if it is shut down and waits until it is ready. `screenshot` saves a full-resolution PNG and prints its path. `ui tree` lists the elements on screen with a ref on each. `video capture` records around one step and reports how the screen moved. Files go to `~/Library/Caches/deviceloop/artifacts`, or to `$DEVICELOOP_HOME/artifacts` when `DEVICELOOP_HOME` is set. While a [run](#runs-and-comparisons) records on the target, they go to that run's `artifacts/` folder.
 
-`--device` takes a UDID, a name or a unique part of it, `booted` for the booted simulator, `usb` for the device connected with a cable, or `device` for any connected device, wired or over the network. `booted`, `usb` and `device` work when exactly one target matches. When several match, the command fails with `device_ambiguous` and lists the candidates, so pass a name or UDID. When none matches, it fails with `device_not_found`. `DEVICELOOP_DEVICE` sets a default. `devices` names the target it picks and gives its UDID as `defaultDevice` in `--json`, and the MCP server names it in its instructions. When exactly one device or simulator is ready, `--device` can be left out.
+`--device` takes a UDID, a name or a unique part of it, `booted` for the booted simulator, `usb` for the device connected with a cable, or `device` for any connected device, wired or over the network. `booted`, `usb` and `device` work when exactly one target matches. When several match, the command fails with `device_ambiguous` and lists the candidates, so pass a name or UDID. When none matches, it fails with `device_not_found`. `DEVICELOOP_DEVICE` sets a default. `devices` names the target it picks and gives its UDID as `defaultDevice` in `--json`, and the MCP server names it in its instructions. When exactly one device or simulator is ready, `--device` can be left out. A connected device counts as ready, so with one phone connected and no simulator booted, a command without `--device` acts on the phone.
+
+On a device, run `deviceloop setup` and `deviceloop prepare --device <udid>` first. [Requirements and device setup](#requirements-and-device-setup) describes both.
 
 [Examples/Sample](../Examples/Sample) is a small app to try these commands on: a list of palettes with detail pages, a sign-in form, a Motion tab and a page of accessibility issues for `ui audit`. Open it in Xcode, pick your team in Signing & Capabilities and run it.
 
@@ -171,11 +175,13 @@ Every MCP tool call appends one JSON line to `$DEVICELOOP_HOME/logs/mcp.jsonl` w
 
 ## Commands
 
-Every command except `mcp` takes `--json`, and commands that act on a target take `--device`. Their results start with a line that names the target. `deviceloop help <command>` lists every option.
+Every command except `mcp` takes `--json`, and commands that act on a target take `--device`. Their results start with a line that names the target. `deviceloop help <command>` lists every option. `deviceloop --generate-completion-script zsh` prints a completion script, and `bash` and `fish` work the same way. For zsh, save it as `_deviceloop` in a folder on `fpath`.
 
 Errors print `ERROR <code>: <message>` to stderr with `Fix:`, `Try:`, `Detail:` and `Receipt:` lines, and `(needs user)` after the code when only the person at the device or Mac can fix it. With `--json` an error prints `{"ok": false, "error": {...}}` to stdout, with `code`, `message`, `actor` and `retryable`, and `fix` when there is one. [SKILL.md](../skills/deviceloop/SKILL.md#errors) explains each code.
 
-Exit codes: 0 success, 1 failure, 2 bad arguments or no matching target, 3 needs the user to act, 4 device or runner unavailable, 5 timeout, 6 not supported on this target, 7 `ui audit` found issues or `state restore` left changes (`cleanup_incomplete`), 8 a `siri test` phrase was not verified or not sent, 130 interrupted with Ctrl-C. `video record`, `launch --console`, `keep-awake` and `trace record` take Ctrl-C as their normal end and exit 0. An unknown option or a missing argument exits 64 and prints plain text, even with `--json`.
+Exit codes: 0 success, 1 failure, 2 bad arguments or no matching target, 3 needs the user to act, 4 device or runner unavailable, 5 timeout, 6 not supported on this target, 7 `ui audit` found issues or `state restore` left changes (`cleanup_incomplete`), 8 a `siri test` phrase was not verified or not sent, 130 interrupted with Ctrl-C. `video record`, `launch --console`, `keep-awake` and `trace record` take Ctrl-C as their normal end and exit 0. An unknown command or option, a missing argument or a bad value is a `bad_arguments` error and exits 2. Its `Detail:` line has the command's usage, and its fix names the closest command or option for a typo, or the `deviceloop help` page to read. `deviceloop help` with an unknown command fails with `bad_arguments` too.
+
+`deviceloop --help` groups the commands by task and lists the first commands to run and the environment variables DeviceLoop reads. Durations are in seconds, except options ending in `-ms`, which take milliseconds, and `run prune --older-than`, which takes days.
 
 Some simulator features have no device equivalent in Apple's tools, for example status bar overrides and erase. A command the target cannot run fails with `unsupported_on_target` and names the missing capability. [docs/parity.md](parity.md) maps every `simctl` command to its device path.
 
@@ -184,7 +190,7 @@ Some simulator features have no device equivalent in Apple's tools, for example 
 | Command | What it does |
 |---|---|
 | `deviceloop setup [--team <ID>] [--yes] [--dry-run] [--no-agents]` | Stores the signing team, prints the MCP registration for each agent (`--yes` runs it), runs `doctor` |
-| `deviceloop doctor [--export <dir>] [--include-runner-logs]` | Checks Xcode, signing and each target, with one fix per problem |
+| `deviceloop doctor [--export <dir>] [--include-runner-logs]` | Checks Xcode, signing and the target `--device` or `DEVICELOOP_DEVICE` names, or every target without either, with one fix per problem |
 | `deviceloop prepare [--all] [--pair] [--wait <s>] [--wait-for-owner <s>] [--dry-run]` | Gets a device ready for UI commands |
 | `deviceloop devices [--all]` | Lists devices and simulators |
 | `deviceloop info` | Shows model, OS, connection, lock state, screen, and what works on the target with a reason for the rest |
@@ -222,7 +228,7 @@ Some simulator features have no device equivalent in Apple's tools, for example 
 - `ui type --into` reads the field back and reports `textVerified`. A mismatch prints `typed "...", not verified` with what the field reads and exits 0. A secure field is not verified and its text is not printed. Without `--into` the field type is unknown and the text is echoed, so pass `--into` for passwords.
 - `ui type --clear` taps near the field's right edge, deletes one character per character of the old text and reads the field again. When text is left it fails with `text_mismatch` before typing, which can happen in a right-to-left or multi-line field.
 - `ui alert accept` and `dismiss` tap the one button with a known label: Allow, OK, Allow While Using App, Allow Full Access, Continue or Open for accept, and Don't Allow, Cancel, Not Now or Dismiss for dismiss. With no match or several, nothing is tapped and the command fails with `element_ambiguous` and lists every button. Pass one with `--button`. The labels are English, so on a device in another language use `--button`. On a location alert, accept taps Allow While Using App.
-- `ui press` with a button the target lacks fails with `unsupported_on_target`, sends nothing and lists the buttons it has. The volume buttons work only on devices.
+- `ui swipe` with a direction other than up, down, left or right, and `ui press` with a button other than home, volumeUp, volumeDown, action or camera, fail with `bad_arguments` before the runner starts. `ui press` with a button the target lacks fails with `unsupported_on_target`, sends nothing and lists the buttons it has. The volume buttons work only on devices.
 - `ui do` steps: `tap id=login`, `doubletap @<ref>`, `hold 120,640 800`, `swipe up`, `drag 200,700 200,200`, `type "hello"`, `press home`, `launch com.apple.Preferences`, `open myapp://route` and `sleep 500`. `type "hello" id=email` types into that field. As in a flow, that step fails with `text_mismatch` when the field does not read back the typed text or cannot be read after typing, and a secure field is not checked. A `sleep` over 120000 ms fails with `bad_arguments` before any step runs. A failing step exits 1 and prints its error on stdout with the result. Errors before the first step, such as target selection or runner start, keep their own exit status and print like any other error. `--json` prints a `deviceloop.flow-result/1` object, so the point a tap hit appears only in the text output.
 - Ctrl-C or SIGTERM stops `ui do` before the next step and exits 130. A second Ctrl-C does not force an exit.
 - `ui audit` types are `contrast`, `elementDetection`, `hitRegion`, `sufficientElementDescription`, `dynamicType`, `textClipped` and `trait`. It saves a screenshot and a JSON report and exits 7 when issues remain after the suppressions. A suppressions file is a JSON array of rules such as `[{"type": "contrast", "id": "login", "reason": "Brand color"}]`. Rules that match no issue are listed as stale and do not change the exit status. An issue whose element is gone after the audit has no element, so no rule can match it.
@@ -250,6 +256,7 @@ Some simulator features have no device equivalent in Apple's tools, for example 
 
 - `install` reads the bundle's Info.plist first and refuses a simulator build on a device, a device build on a simulator, or a build that needs a newer OS. It prints the version, build and signing.
 - `launch` reports `launched`, `relaunched` with `--restart`, or `activated` when the app was already running, in which case the arguments and environment did not apply. It prints `launchedAt`, which `crashes --since` takes.
+- `launch --env` and `logs start --env` values go on the `devicectl` command line, where other accounts on the Mac can read them with `ps`. [Threat model](../SECURITY.md#threat-model) says how to pass secrets instead.
 - `launch --console` streams the app's stdout, stderr and os_log until it exits and saves them to `artifacts/log-<bundle ID>-<time>.log`. With `--json` the app's output goes to stderr and the JSON result to stdout. Output connects only to a new process, so pass `--restart` for an app that may be running.
 - `logs start` terminates a running instance and relaunches the app for the same reason. A second capture of the same app on the same device fails with `device_busy`. While `ui` commands drive the app, the capture also holds XCTest's query log lines.
 - `logs start --system` runs `log stream` on a simulator at its default level, so os_log info and debug messages are not captured. On a device it fails with `unsupported_on_target`. Use Console.app there.
@@ -282,13 +289,13 @@ Some simulator features have no device equivalent in Apple's tools, for example 
 - `state` marks each field `observed`, `unknown`, `unsupported` or `unavailable`, with a reason. Location, pasteboard, battery, thermal state and Low Power Mode are unknown on every target. `statusBarOverrides` lists the lines `simctl status_bar list` prints, so some values are simctl's enum numbers, for example `DataNetworkType: 1`.
 - A scope journals `location`, `appearance`, `orientation`, the Siri system controls and `pasteboard copy`. `restore` sets appearance and orientation back. Location, the Siri system controls and pasteboard copy cannot be set back, and a `--strict` scope refuses them. `restore --clear-location` clears the simulated location instead, including one another tool set after DeviceLoop, and the location from before the scope is lost. `siri say`, `lock` and UI input are not journaled, and a strict scope does not refuse them.
 - A field that changed since DeviceLoop set it is a conflict and stays as it is, also when something else set it back to its original value. Close such a scope with `--overwrite-conflicts` or `--accept-residual`. Otherwise `restore` exits 7 with `cleanup_incomplete` and keeps the scope open.
-- Captures, `cleanup.json` and closed journals stay in `$DEVICELOOP_HOME/state/<udid>/` until you delete them. `doctor` shows an open scope only for targets devicectl still lists, so a scope left on a deleted simulator stays in `changes.jsonl` there. Without `--device`, `doctor` also checks a shut-down simulator with an open scope, and its boot check fails until you boot it and run `deviceloop state restore`.
+- Captures, `cleanup.json` and closed journals stay in `$DEVICELOOP_HOME/state/<udid>/` until you delete them. `doctor` shows an open scope only for targets devicectl still lists, so a scope left on a deleted simulator stays in `changes.jsonl` there. Without `--device` or `DEVICELOOP_DEVICE`, `doctor` also checks a shut-down simulator with an open scope, and its boot check fails until you boot it and run `deviceloop state restore`.
 
 ### Video and animation
 
 | Command | What it does |
 |---|---|
-| `deviceloop video record [-o <file>] [--duration-ms <ms>]` | Records until Ctrl-C, or for `--duration-ms` |
+| `deviceloop video record [-o <file>] [--duration-ms <ms>]` | Records until Ctrl-C, or for `--duration-ms`, to a new file |
 | `deviceloop video start` | Starts recording in the background and prints a handle |
 | `deviceloop video stop <handle> [--no-analyze] [--region <x,y,w,h>] [--mask <x,y,w,h>]` | Stops a recording and analyzes it |
 | `deviceloop video capture --do <step> [--pre-ms <ms>] [--wait-ms <ms>] [--keep-video] [--instruments --app <id> [--keep-trace]]` | Records around one step and times the screen's response |
@@ -354,7 +361,7 @@ A flow is a JSON file with the schema `deviceloop.flow/1`:
 - Top-level fields are `schema`, `name`, `app` (`bundleID`, and optional `arguments`, `environment`, `version` and `build`), `reset` (`none` by default, `relaunch` or `reinstall`), `appPath` (the `.app` or `.ipa` that `reinstall` installs), `requires`, `timeoutMs` (default 300000), `setup`, `steps` and `cleanup`.
 - Step kinds are `tap`, `doubletap`, `hold`, `swipe`, `drag`, `type`, `press` (home or action), `launch`, `open`, `sleep`, `assert`, `settle`, `screenshot` and `alert`. Each takes a `timeoutMs` (default 30000). A target is `x` and `y`, or one of `id`, `label` and `labelContains` with an optional `type`. Refs are not accepted because they do not replay.
 - Flow v1 has no Siri, location, appearance, orientation, audit or checkpoint steps, and cannot resume from a checkpoint.
-- [Examples/Flows](../Examples/Flows) has two flows for the runner's fixture app. They name the simulator host app `com.argmaxinc.deviceloop.host`. A device build adds the signing team to that ID, so on a device pass `--app` with the host bundle ID that `deviceloop runner start` prints.
+- [Examples/Flows](../Examples/Flows) has two flows for the runner's fixture app. They name the simulator host app `com.argmaxinc.deviceloop.host`, which is installed when the runner starts, so run `deviceloop runner start` before the first flow on a target. A device build adds the signing team to that ID, so on a device pass `--app` with the host bundle ID that `deviceloop runner start` prints.
 - Each run writes `flow.json`, `result.json` (schema `deviceloop.flow-result/1`) and its screenshots to `$DEVICELOOP_HOME/artifacts/flows/flow-<time>-<id>/`. A failing step also saves `failure.png`, taken inside that step, so its `endMs` includes it. A run stopped by the deadline or by cancellation has no failure screenshot.
 - The app start before setup is not a step and does not count toward `timeoutMs`. A run that fails while it reinstalls or starts the app reports the error and leaves `flow.json` without `result.json`.
 - Setup and steps stop at the first step that does not pass. Every cleanup step runs, also after the deadline and after an earlier cleanup step failed, each for up to its own `timeoutMs`. A cleanup failure turns a passed run into `cleanup_failed`.
@@ -420,7 +427,7 @@ Some system actions have no devicectl, simctl or XCTest API. The runner reaches 
 | `deviceloop runner operation <id> --epoch <epoch>` | Reads an operation receipt without sending input |
 
 - The first UI command on a target starts the runner, and `runner start` does it ahead of time. A device runner start waits up to 90 s, or until 75 s after XCTest starts the runner's tests when that is later. Builds are cached per team under `$DEVICELOOP_HOME/runner`, and a cached device build whose provisioning profile expired is built again.
-- After an upgrade, the next UI command replaces a runner started by another DeviceLoop version.
+- After an upgrade, the next UI command replaces a runner started by another DeviceLoop version. [Upgrade](#upgrade) covers builds of the same version.
 - The runner runs one request at a time and rejects the rest with `device_busy`. `devicectl` and `simctl` commands are outside that limit.
 - An error with a `Receipt:` line names the operation. When the outcome is unknown (`action_outcome_unknown`), read the receipt with `runner operation` before sending the input again.
 - `signing_profile_failed` means the device rejected the runner's provisioning profile, or the team's profile does not include the device. The fix line names what to remove or add.
@@ -505,7 +512,7 @@ Measured on an iPhone 13 Pro with iOS 18.7.8, an iPhone 15 Pro Max with iOS 27.0
 
 ## Troubleshooting with doctor
 
-`deviceloop doctor` checks the Mac and every device and booted simulator. `deviceloop doctor --device <name>` checks one. Each line is `ok`, `warn` or `fail`, and every problem has one fix line.
+`deviceloop doctor` checks the Mac and every device and booted simulator. `deviceloop doctor --device <name>` checks one, and so does `doctor` with `DEVICELOOP_DEVICE` set. Each line is `ok`, `warn` or `fail`, and every problem has one fix line.
 
 ```text
 This Mac (macOS 27.2.0)
@@ -548,7 +555,7 @@ ok   runner: no session
 | `capture helper` | Record once from a USB device and allow camera access. The line shows `bundled` or `built` and the helper path |
 | `runner project` | Keep the source checkout the binary was built in, set `DEVICELOOP_RUNNER_PATH` to its `Runner` folder, or reinstall DeviceLoop |
 | `host ddi` | `sudo xcodebuild -runFirstLaunch -checkForNewerComponents` or `xcrun devicectl manage ddis update` |
-| `targets` | Connect and unlock a device, or boot a simulator with `xcrun simctl boot <udid>` |
+| `targets` | `deviceloop devices --all`, then boot a simulator with `xcrun simctl boot <udid>`, or connect and unlock a device |
 | `boot` | `xcrun simctl boot <udid>` |
 | `pairing` | Unlock the device, tap Trust and enter the passcode |
 | `developer mode` | Settings > Privacy & Security > Developer Mode on the device, then restart it |
@@ -565,7 +572,7 @@ To report a bug, run `deviceloop doctor --export <folder>` and attach the folder
 
 ## Privacy and data on disk
 
-DeviceLoop keeps everything under `DEVICELOOP_HOME`, which defaults to `~/Library/Caches/deviceloop`.
+DeviceLoop keeps everything under `DEVICELOOP_HOME`, which defaults to `~/Library/Caches/deviceloop`. Clearing `~/Library/Caches` deletes the stored team, the runs and the journal an open state scope needs to set its changes back.
 
 | Path | Holds |
 |---|---|
@@ -585,3 +592,35 @@ DeviceLoop does not prune old files. `run prune` removes old runs, and you delet
 Runs and the MCP activity log hide typed text, as described under [Runs and comparisons](#runs-and-comparisons) and [Activity log](#activity-log). [What DeviceLoop stores](../SECURITY.md#what-deviceloop-stores) lists the files that keep secrets or typed text, and [Runner token and network](../SECURITY.md#runner-token-and-network) describes the runner's token.
 
 DeviceLoop sends no telemetry. [What leaves the Mac](../SECURITY.md#what-leaves-the-mac) lists the connections it makes and where command output goes.
+
+## Upgrade and uninstall
+
+### Upgrade
+
+In the checkout:
+
+```bash
+git pull
+xcrun swift build -c release --product deviceloop
+deviceloop runner stop --device <udid>
+```
+
+- The link in `~/.local/bin` points at the build product, so it runs the new build.
+- Run `runner stop` on each target that has a runner. With `DEVICELOOP_DEVICE` unset, `doctor` prints a `runner` line for each target. DeviceLoop keeps using a runner that another build of the same version started. After `runner stop`, the next UI command builds and starts the new runner.
+- Restart your agent sessions so they start the new `deviceloop mcp`.
+- Copy `skills/deviceloop/SKILL.md` to `~/.claude/skills/deviceloop/` again.
+- Builds of older runner sources stay in `$DEVICELOOP_HOME/runner`. To free the space, run `runner stop` on every target, then delete that folder. The next UI command builds the runner again.
+
+### Uninstall
+
+1. Stop the runner on each target with `deviceloop runner stop --device <udid>`.
+2. Remove the apps DeviceLoop installed. `deviceloop apps --name com.argmaxinc.deviceloop --device <udid>` lists them on a target: the host app and the runner, plus the Siri fixture if you installed it. On a device their bundle IDs include your team ID. Remove each with `deviceloop uninstall <bundle-id> --device <udid>`.
+3. Remove the MCP server from each agent:
+   - Claude Code: `claude mcp remove -s user deviceloop`
+   - Codex: delete the `[mcp_servers.deviceloop]` table from `~/.codex/config.toml`
+   - Cursor: delete `mcpServers.deviceloop` from `~/.cursor/mcp.json`
+   - Gemini CLI: `gemini mcp remove -s user deviceloop`
+4. Delete the `deviceloop` link in `~/.local/bin`, the skill copy in `~/.claude/skills/deviceloop`, the checkout and the `DEVICELOOP_HOME` folder that [Privacy and data on disk](#privacy-and-data-on-disk) describes.
+5. Reset the capture helper's camera permission with `tccutil reset Camera com.argmaxinc.deviceloop.capture`.
+
+Devices stay paired and registered with your signing team, and Developer Mode stays on.
